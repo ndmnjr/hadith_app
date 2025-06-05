@@ -1,0 +1,53 @@
+:root {
+    font-family: 'Cairo', sans-serif;
+    line-height: 1.6;
+}
+body {
+    margin: 0;
+    padding: 1rem;
+    background: #f7f7f7;
+}
+header h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.search-form {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    margin-bottom: 1rem;
+}
+.search-form input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.search-form button,
+.search-form .reset-btn {
+    padding: 0.5rem;
+    border: none;
+    background: #006d77;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+}
+.search-form .reset-btn {
+    background: #e29578;
+    text-decoration: none;
+}
+.results {
+    display: grid;
+    gap: 1rem;
+}
+.hadith-card {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+@media (min-width: 600px) {
+    .hadith-card {
+        padding: 1.5rem;
+    }
+}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post" class="search-form">
+    <input type="text" name="q" placeholder="ابحث في نص الحديث أو الراوي" value="{{ filters.get('q','') }}">
+    <input type="text" name="rawi" placeholder="اسم الراوي" value="{{ filters.get('rawi','') }}">
+    <input type="text" name="book" placeholder="الكتاب" value="{{ filters.get('book','') }}">
+    <input type="text" name="chapter" placeholder="الباب" value="{{ filters.get('chapter','') }}">
+    <input type="text" name="number" placeholder="الرقم" value="{{ filters.get('number','') }}">
+    <button type="submit">بحث</button>
+    <a href="{{ url_for('reset') }}" class="reset-btn">إعادة ضبط</a>
+</form>
+
+<section class="export">
+    <a href="{{ url_for('export_csv', **filters) }}">📥 تصدير النتائج CSV</a>
+</section>
+
+<section class="results">
+    {% for h in results %}
+    <article class="hadith-card">
+        <header>
+            <strong>{{ h.book }} - {{ h.chapter }}</strong> ({{ h.number }})
+        </header>
+        <p class="hadith-text">{{ h.hadith }}</p>
+        <footer>الراوي: {{ h.rawi.rawi_name if h.rawi else 'غير معروف' }}</footer>
+    </article>
+    {% else %}
+    <p>لا توجد نتائج مطابقة.</p>
+    {% endfor %}
+</section>
+{% endblock %}
