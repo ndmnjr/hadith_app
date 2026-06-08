@@ -1,0 +1,4 @@
+project_ref=kslmekrqjypanipwsypr
+project_url=https://kslmekrqjypanipwsypr.supabase.co
+database=Supabase PostgreSQL
+schema=public

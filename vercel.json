@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/browse", "destination": "/browse.html" },
+    { "source": "/search", "destination": "/search.html" },
+    { "source": "/hadith-index", "destination": "/hadith-index.html" },
+    { "source": "/narrators", "destination": "/narrators.html" },
+    { "source": "/musnad", "destination": "/musnad.html" },
+    { "source": "/hadith", "destination": "/hadith.html" }
+  ]
+}

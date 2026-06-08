@@ -1,0 +1,26 @@
+{
+  "name": "hadith_app",
+  "version": "1.0.0",
+  "description": "منصة كتب الحديث للشيخ يحيى اليحيى - MVP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check:db": "node scripts/check-db.js",
+    "apply:migration": "node scripts/apply-migration.js",
+    "test": "node scripts/check-db.js"
+  },
+  "keywords": [
+    "hadith",
+    "arabic",
+    "rtl",
+    "supabase"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "dotenv": "^17.4.2",
+    "pg": "^8.21.0",
+    "playwright": "^1.60.0"
+  }
+}

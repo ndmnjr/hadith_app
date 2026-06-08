@@ -1,0 +1,730 @@
+PRD.mdPRD.md
+
+Product Requirements Document (PRD)
+
+1. Project Title
+
+Sheikh Yahya Al-Yahya’s Hadith Books Platform (موقع كتب الحديث للشيخ يحيى اليحيى)
+
+2. Project Overview
+
+An advanced, fast, and responsive web platform designed for Hadith memorizers (الحفاظ). It provides display books, specialized search, filtration, and export capabilities across the Hadith collections (دواوين السنة) authored by Sheikh Yahya Al-Yahya. 
+
+The platform acts as a hybrid between "Dorar Net" (الموسوعة الحديثية) for advanced filtration and "Shamela" & “Dalail Academy” for book browsing.
+
+3. System Architecture & Tech Stack (Recommended)
+
+Frontend: Next.js
+
+Backend: JavaScript supporting frameworks.
+
+Database: Existing Supabase (PostgreSQL) for Data Storage, Authentication, and Full-Text Search.
+
+You can add any other tools needed
+
+You can suggest enhacements in architecture, logics, algorithms to approve before executing
+
+Make each feature in separate page
+
+4. Data Architecture & Database Schema
+
+4.1 General Overview
+
+Volume (المجلد) -> Book (الكتاب) -> Chapter (الباب) -> Hadith (الحديث).example: المجلد: سنن الترمذي > الكتاب: كتاب الإيمان > باب: ما الإيمان > حديث رقم 23: عن أبي هريرة رضي الله عنه ……
+
+There are 12 volumes
+
+Hadith types & relations: main, sub, part, h_main, h_parth_main & h_part only for volumes 7+
+
+each main hadith might have sub, part, h_main, h_part
+
+each sub hadith might have part, h_main, h_part
+
+each part hadith might have h_main, h_part
+
+part & h_part doesn’t have rawi
+
+Takhreej: volumes 1-6 doesn’t have takhreej or takhreej_full, its null
+
+from volume 7-12: each hadith has takhreej_full
+
+h_main, h_part has takhreej (short tahkreej) otherwise its null
+
+The database schema is already implemented in Supabase with the following structural layout:
+
+volumes -> books -> chapters -> hadith
+
+rawis <-> hadith_rawi (Many-to-Many Junction Table) -> hadith
+
+4.2 Supabase DB schema
+
+CREATE TABLE public.volumes (
+  id bigint NOT NULL DEFAULT nextval('volumes_id_seq'::regclass),
+  name text NOT NULL,
+  description text,
+  order_index integer NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT volumes_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.books (
+  id bigint NOT NULL DEFAULT nextval('books_id_seq'::regclass),
+  volume_id bigint,
+  name text NOT NULL,
+  order_index integer NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT books_pkey PRIMARY KEY (id),
+  CONSTRAINT books_volume_id_fkey FOREIGN KEY (volume_id) REFERENCES public.volumes(id)
+);
+CREATE TABLE public.chapters (
+  id bigint NOT NULL DEFAULT nextval('chapters_id_seq'::regclass),
+  book_id bigint,
+  name text NOT NULL,
+  order_index integer NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT chapters_pkey PRIMARY KEY (id),
+  CONSTRAINT chapters_book_id_fkey FOREIGN KEY (book_id) REFERENCES public.books(id)
+);
+CREATE TABLE public.hadith (
+  id bigint NOT NULL DEFAULT nextval('hadith_id_seq'::regclass),
+  chapter_id bigint,
+  hadith_number text NOT NULL,
+  text text NOT NULL,
+  page_number integer,
+  type text DEFAULT 'main'::text CHECK (type = ANY (ARRAY['main'::text, 'hadith'::text, 'part'::text, 'h_main'::text, 'h_part'::text, 'hashiah'::text, 'zawaid'::text, 'others'::text, 'sub'::text])),
+  created_at timestamp with time zone DEFAULT now(),
+  text_html text,
+  takhreej text,
+  takhreej_full text,
+  order_index integer NOT NULL,
+  CONSTRAINT hadith_pkey PRIMARY KEY (id),
+  CONSTRAINT hadith_chapter_id_fkey FOREIGN KEY (chapter_id) REFERENCES public.chapters(id)
+);
+CREATE TABLE public.rawis (
+  id bigint NOT NULL DEFAULT nextval('rawis_id_seq'::regclass),
+  name text NOT NULL UNIQUE,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT rawis_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.hadith_rawi (
+  hadith_id bigint NOT NULL,
+  rawi_id bigint NOT NULL,
+  CONSTRAINT hadith_rawi_pkey PRIMARY KEY (hadith_id, rawi_id),
+  CONSTRAINT hadith_rawi_hadith_id_fkey FOREIGN KEY (hadith_id) REFERENCES public.hadith(id),
+  CONSTRAINT hadith_rawi_rawi_id_fkey FOREIGN KEY (rawi_id) REFERENCES public.rawis(id)
+);
+CREATE TABLE public.audio (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  hadith_id bigint,
+  audio_url text NOT NULL,
+  duration_seconds integer,
+  reciter_name text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT audio_pkey PRIMARY KEY (id),
+  CONSTRAINT audio_hadith_id_fkey FOREIGN KEY (hadith_id) REFERENCES public.hadith(id)
+);
+
+5. Core Features & Functional Requirements
+
+Sub-feature 1: Filters (to be used as components in features later)
+
+Scope: Reusable UI/UX structural selector modules implemented across Feature 1 (Narrators Musnad), Feature 2 (Narrator Search), Feature 3 (Hadith Text Search), Feature 4 (Hadith Index), and Feature 5 (Advanced Search).
+
+Description: Provides a cascading, searchable multi-select combobox subsystem (Volume ➔ Book ➔ Chapter) designed via Shadcn UI primitives, enforcing a reactive onChange data relationship pattern while passing relational database BigInt id properties silently behind localized Arabic label values.
+
+1. Component Specification Constraints
+A. Internal Data Mapping Properties
+
+Dual-State Bindings: Every dropdown choice populates an object shape mapping a visible string literal (name) and a hidden relational parameter value (id).Display Field Layer: volumes.name / books.name / chapters.name
+
+Value Payload Layer (Hidden): volumes.id / books.id / chapters.id (Passed immediately to state controllers upon event triggering).
+
+Global Select Option: The default option initialized at the top of each selector lists as an implicit wildcard (All Volumes, All Books, All Chapters). Selecting this maps the state payload variable directly to a JavaScript null value, enabling backend query scripts to invoke structural IS NULL pass-through clauses.
+
+B. Interface Searchability & Interaction Rules
+
+Search Context (Auto-complete): Standard selection inputs convert into filtering text inputs upon focus. The selector runs an in-memory or debounced substring match over Arabic text literals, allowing scholars to jump directly to deep target books (e.g., typing "الجمعة" highlights matching items instantaneously).
+
+Multi-Select Integration: Dropdowns must support simultaneous multi-item index evaluations (e.g., passing an array of volume_id keys). If active, standard singular primitives transition into array structures passed directly to PostgreSQL ANY or IN array operators.
+
+2. Cascading Structural Dependencies & Reactive Workflows
+The dropdown filters maintain a strict hierarchy tree. Mutating a superior state node forces immediate programmatic clean-ups and data-fetching events downstream to prevent corrupted cross-referencing assignments.
+
+[Select Volume] ➔ updates local state ➔ resets [Book Select] & [Chapter Select]
+
+↓
+
+Triggers API fetch ➔ loads matching Books matching selected volume_id
+
+↓
+
+[Select Book]   ➔ updates local state ➔ resets [Chapter Select]
+
+↓
+
+Triggers API fetch ➔ loads matching Chapters matching selected book_id
+
+3. Concrete Interaction Scenario (Workflow Case Study)
+Initial Platform Frame Status:Volume Dropdown: Active (Populated with all database Volume records via root indexing queries).
+
+Book Dropdown: Disabled / Locked (Awaiting superior input context).
+
+Chapter Dropdown: Disabled / Locked (Awaiting superior input context).
+
+Triggering Event Alpha (onVolumeChange):The user opens the Volume dropdown, types a query, and selects the volume row containing target legal/ritual categories.
+
+State Action: The system updates selected_volume_id to the record's underlying id integer, while wiping any previously cached states for selected_book_id and selected_chapter_id to null.
+
+Downstream Action: The Book dropdown is unlocked and an asynchronous API data retrieval task fires instantly using the following reactive query definition:SELECT id, name FROM public.books
+WHERE volume_id = :selected_volume_id
+ORDER BY order_index;
+
+Triggering Event Beta (onBookChange):The unlocked Book dropdown populates dynamically, showcasing the specialized index text label for emaple: Book of Friday and Eids (كتاب الجمعة والعيدين). The user interacts and selects this item row.
+
+State Action: The client store updates selected_book_id with its true id while keeping downstream options isolated.
+
+Downstream Action: The Chapter dropdown is unlocked, executing an instant lookup execution targeting immediate child sub-nodes:SELECT id, name FROM public.chapters
+WHERE book_id = :selected_book_id
+ORDER BY order_index;
+
+Triggering Event Gamma (onChapterChange):The Chapter combobox list displays localized entries matching Friday Chapter (باب الجمعة) and Eids Chapter (باب العيدين) with instant auto-complete query matching active.
+
+The user clicks Friday Chapter (باب الجمعة). The variable selected_chapter_id commits
+
+Sub-feature 2: Interactive Hadith Reader (Pop-up View)
+
+Scope: Integrated globally across all Data Tables (Features 1, 2, 3, and 4). Triggered when a user clicks on a specific Hadith row.
+
+Description: A modal/dialog component that fetches and reconstructs the complete textual cluster of a Hadith (including its structural siblings, sub-narrations, and footnotes). It dynamically formats the output into a printable, reading-friendly HTML view based on the Volume sequence and Takhreej preferences.
+
+Inputs:  target_hadith_id (The explicit ID of the clicked row).
+
+show_full_takhreej (Boolean toggle determining whether to show long or short validation strings).
+
+Outputs: Formatted HTML/UI content rendering the hierarchical Hadith structure.
+
+Actions: Copy complete structured text.
+
+1. Database Query Execution
+This query utilizes a single input (:target_hadith_id) to automatically drill up and capture the exact hierarchical grouping (same Volume, Book, Chapter, and Hadith Number).
+
+SELECT
+    h.id AS hadith_id,
+    h.hadith_number,
+    h.text AS hadith_text,
+    h.text_html,
+    h.type AS hadith_type,
+    h.takhreej AS short_takhreej,
+    h.takhreej_full AS long_takhreej,
+    h.order_index AS hadith_order_index,
+    c.id AS chapter_id,
+    c.name AS chapter_name,
+    b.id AS book_id,
+    b.name AS book_name,
+    v.id AS volume_id,
+    v.name AS volume_name
+FROM public.hadith h
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+WHERE
+    -- Match the extracted structural attributes from the input ID
+    h.hadith_number = (SELECT sub_h.hadith_number FROM public.hadith sub_h WHERE sub_h.id = :target_hadith_id)
+    AND c.id = (SELECT sub_h.chapter_id FROM public.hadith sub_h WHERE sub_h.id = :target_hadith_id)
+    AND b.id = (
+        SELECT sub_c.book_id
+        FROM public.hadith sub_h
+        JOIN public.chapters sub_c ON sub_h.chapter_id = sub_c.id
+        WHERE sub_h.id = :target_hadith_id
+    )
+    AND v.id = (
+        SELECT sub_b.volume_id
+        FROM public.hadith sub_h
+        JOIN public.chapters sub_c ON sub_h.chapter_id = sub_c.id
+        JOIN public.books sub_b ON sub_c.book_id = sub_b.id
+        WHERE sub_h.id = :target_hadith_id
+    )
+ORDER BY
+    h.order_index ASC;
+
+2. Frontend Data Processing: Unified Footnote Grouping Algorithm
+The SQL query returns a flat array of sequence-ordered text segments. To prevent visual clutter, the frontend MUST parse this array using a Consolidated Footnote Algorithm.
+
+Core Rule: A single parent text (main, sub, or part) must receive a maximum of ONE superscript footnote index. Any consecutive sub-nodes (h_main, h_part) that belong to that parent must bundle their content underneath that same single footnote index in the Hashiah section.
+
+Tree Nesting Hierarchy Rules:
+
+The array always starts with one main node.
+
+main can contain children: [sub, part, h_main, h_part].
+
+sub can contain children: [part, h_main, h_sub].
+
+part can contain children: [h_main, h_part].
+
+Algorithm Logic:
+
+Initialize footnoteIndex = 1. Track activeMatnBlock and activeHashiahBlock.
+
+If Node is a Parent (main, sub, part):Push a new block to the MATN array. Set it as activeMatnBlock.
+
+Initialize its footnoteIndex as null.
+
+Create a new activeHashiahBlock (with a null index and an empty array for items).
+
+If show_full_takhreej === true AND node has long_takhreej: * Immediately assign footnoteIndex to activeMatnBlock.Assign footnoteIndex to activeHashiahBlock, push the long_takhreej into its items, and push to the HASHIAH array.
+
+Increment footnoteIndex++.
+
+If Node is a Child (h_main, h_part, h_sub):Look at the activeMatnBlock. If it does NOT have a footnote index yet, assign it the current footnoteIndex, set the activeHashiahBlock index, push it to the HASHIAH array, and increment footnoteIndex++.
+
+Push the child's text_html and its relevant takhreej (long_takhreej if toggle is true, else short_takhreej) into the existing activeHashiahBlock's items array.
+
+3. Frontend Rendering & UI/UX Logic
+A. Header Section Layout
+
+Regardless of the volume, the pop-up must always begin with the structural hierarchy centered and stylized:
+
+Top Line: Volume Name (volume_name).
+
+Middle Line: Book Name (book_name) ➔ Styled with Bold and Red text.
+
+Bottom Line: Chapter Name (chapter_name) ➔ Styled with Bold and Green text.
+
+B. Content Body Generation Rules
+
+The application evaluates the parsed blocks and applies rendering rules based on the volume context.
+
+CASE 1: Early Volumes (Volumes 1 to 6)
+
+These volumes do not utilize complex Takhreej or Hashiah splits. Ignore the HASHIAH array.
+
+If type === 'main': Render hadith_number + " - " + text_html.
+
+If type === 'sub': Render "•" + text_html.
+
+If type === 'part': Render text_html.
+
+CASE 2: Extended Volumes (Volumes 7 to 12)
+
+These volumes require a split-screen layout: MATN (Top Container) and HASHIAH (Bottom Footnote Container, separated by a visual divider ---).
+
+MATN Rendering:Loop through the MATN blocks.
+
+Prefix main with <span class="font-bold">{hadith_number} -</span>.
+
+Prefix sub with <span class="font-bold">•</span>.
+
+Render the text_html.
+
+Critical: If the block has a footnoteIndex, append <sup class="text-blue-800">[{footnoteIndex}]</sup> to the end of the text. (Agent Note: Use CSS display: inline on database paragraph tags to ensure the superscript stays on the same line as the text).
+
+HASHIAH Rendering:Loop through the populated HASHIAH blocks.
+
+Render the footnote number: [{hashiah.index}].
+
+Loop through the inner items of that hashiah block:Render the child's text_html (if any).
+
+Render the takhreej string next to it.
+
+Sub-feature 3: Data Export Engine (زر التصدير)
+
+Scope: Integrated and shared globally across Feature 1 (Narrators Musnad), Feature 2 (Narrator Search), Feature 3 (Hadith Text Search), and Feature 4 (Hadith Index).
+
+Description: Provides a client-side action button allowing users to download the currently filtered dataset grid into fully-formatted, print-ready document payloads (.docx, .xlsx, .pdf) while dynamically resolving critical Arabic typesetting and text direction standards.
+
+Feature 1: Narrators Musnad (مسند الرواة)
+
+Description: Helps users find narrators based on their narration frequency and location.
+
+Inputs:narration_count (Number of times narrated).
+
+Filters: Volume, Book, Chapter (Optional drop-downs).
+
+Outputs: A responsive data table containing:Narrator Name, ID (اسم الراوي)
+
+Hadith id, number, text, type (طرف الحديث)
+
+Volume, Book, Chapter name.
+
+Actions:Export to Word/Excel/PDF.
+
+View full hadith by clicking row
+
+Query:
+
+CREATE OR REPLACE FUNCTION get_narrator_musnad(
+    p_narration_count INT DEFAULT 1,
+    p_volume_id INT DEFAULT NULL,
+    p_book_id INT DEFAULT NULL,
+    p_chapter_id INT DEFAULT NULL
+)
+RETURNS TABLE (
+    rawi_id INT,
+    rawi_name TEXT,
+    hadith_id INT,
+    hadith_number INT,
+    hadith_text TEXT,
+    hadith_type TEXT,
+    chapter_name TEXT,
+    book_name TEXT,
+    volume_name TEXT
+) 
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    RETURN QUERY
+    WITH FilteredRawis AS (
+        SELECT 
+            hr.rawi_id
+        FROM public.hadith_rawi hr
+        JOIN public.hadith h ON hr.hadith_id = h.id
+        JOIN public.chapters c ON h.chapter_id = c.id
+        JOIN public.books b ON c.book_id = b.id
+        JOIN public.volumes v ON b.volume_id = v.id
+        WHERE 
+            (p_volume_id IS NULL OR v.id = p_volume_id) AND
+            (p_book_id IS NULL OR b.id = p_book_id) AND
+            (p_chapter_id IS NULL OR c.id = p_chapter_id)
+        GROUP BY hr.rawi_id
+        HAVING COUNT(hr.hadith_id) = p_narration_count
+    )
+    SELECT 
+        r.id AS rawi_id,
+        r.name AS rawi_name,
+        h.id AS hadith_id,
+        h.hadith_number,
+        h.text AS hadith_text,
+        h.type AS hadith_type,
+        c.name AS chapter_name,
+        b.name AS book_name,
+        v.name AS volume_name
+    FROM public.rawis r
+    JOIN FilteredRawis fr ON r.id = fr.rawi_id
+    JOIN public.hadith_rawi hr ON r.id = hr.rawi_id
+    JOIN public.hadith h ON hr.hadith_id = h.id
+    JOIN public.chapters c ON h.chapter_id = c.id
+    JOIN public.books b ON c.book_id = b.id
+    JOIN public.volumes v ON b.volume_id = v.id
+    WHERE 
+        (p_volume_id IS NULL OR v.id = p_volume_id) AND
+        (p_book_id IS NULL OR b.id = p_book_id) AND
+        (p_chapter_id IS NULL OR c.id = p_chapter_id)
+    ORDER BY r.name, h.hadith_number;
+END;
+$$;
+
+Feature 2: Narrator Search (البحث في الرواة)
+
+Description: Search for a specific narrator and see all their narrations.
+
+Inputs:rawi_id (Text search with auto-complete/fuzzy match from dropdown list or choose from the list).case: ابن عمر، أبو عبد الرحمن، عبد الله بن عمر ( name, other_names with separate flag)
+
+auto-complete case : tooltip, search on other_names 
+
+Filters: Volume, Book, Chapter.
+
+Outputs: A structured table showing the narrator's Hadiths (اطراف المرويات) mapped with their exact locations (Volume, Book, Chapter, Hadith Number).
+
+need to handle multiple rawi
+
+Query: 
+
+SELECT 
+    r.id AS rawi_id,
+    r.name AS rawi_name,
+    h.id AS hadith_id,
+    h.hadith_number AS hadith_name,
+    h.text AS hadith_text,
+    h.type AS hadith_type,
+    c.name AS chapter_name,
+    b.name AS book_name,
+    v.name AS volume_name
+FROM public.rawis r
+JOIN public.hadith_rawi hr ON r.id = hr.rawi_id
+JOIN public.hadith h ON hr.hadith_id = h.id
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+WHERE 
+    -- 1. Filter by the specific Rawi ID
+    r.id = [rawi_id]  -- Replace [rawi_id] with your input rawi_id
+    
+    -- 2. Optional Hierarchical Filters
+        AND (p_volume_id IS NULL OR v.id = p_volume_id) AND
+        (p_book_id IS NULL OR b.id = p_book_id) AND
+        (p_chapter_id IS NULL OR c.id = p_chapter_id)
+ORDER BY v.order_index, b.order_index, c.order_index, h.hadith_number;
+
+Feature 3: Hadith Text Search (البحث في الأحاديث)
+
+Description: Global exact or fuzzy search within Hadith texts / Full-text or phrase search inside the body of the Hadiths.
+
+Inputs:search_query (Word, phrase, or sentence. e.g., "أي العمل أفضل").
+
+Filters: Volume, Book, Chapter.
+
+Outputs: Highlighted search results table.
+
+Query: 
+
+-- ================ البحث في الحديث =====================
+SELECT 
+    h.id AS hadith_id,
+    h.hadith_number AS hadith_name,
+    h.text AS hadith_text,
+    h.type AS hadith_type,
+    c.name AS chapter_name,
+    b.name AS book_name,
+    v.name AS volume_name,
+    string_agg(r.name, ', ') AS narrators
+FROM public.hadith h
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+LEFT JOIN public.hadith_rawi hr ON h.id = hr.hadith_id
+LEFT JOIN public.rawis r ON hr.rawi_id = r.id
+WHERE 
+    -- The Text Search
+    -- This makes the search dynamic and independent of Hamza/Tashkeel
+    public.normalize_ar(h.text) ILIKE public.normalize_ar('%[input_text]%') 
+    
+    -- Hierarchical Filters
+        AND (p_volume_id IS NULL OR v.id = p_volume_id) AND
+        (p_book_id IS NULL OR b.id = p_book_id) AND
+        (p_chapter_id IS NULL OR c.id = p_chapter_id)
+GROUP BY 
+    h.id, 
+    c.name, 
+    b.name, 
+    v.name, 
+    v.order_index,
+    b.order_index,
+    c.order_index  
+ORDER BY 
+    v.order_index, 
+    b.order_index, 
+    c.order_index, 
+    h.order_index;
+
+Feature 4: Hadith Index (فهرس طرف الحديث)
+
+Description: Generates a lightweight, fast-loading table of contents index for all Hadiths. It truncates the full vocalized text dynamically to display only the first 15 words as an incipit (طرف الحديث) alongside its exact structural library positions.
+
+Inputs: Filters : volume, book, chapter 
+
+Outputs: A structured data grid returning:Hadith ID (hadith_id), Hadith Number (hadith_number).
+
+Hadith Incipit (hadith_beginning) (First 15 words cleanly stripped from trailing whitespaces with "..." appended if truncated).
+
+Hierarchy context structural strings: Volume Name (volume_name), Book Name (book_name), Chapter Name (chapter_name).
+
+Actions: Export to Word/Excel/PDF, Dynamic text filtering, and deep-linking to full reader view upon row interaction.
+
+Future plan: Clean data manually: add hadith_beginning column in hadith
+
+Query:
+
+SELECT 
+    h.id AS hadith_id,
+    h.hadith_number,
+    
+    -- تحويل النص لمصفوفة كلمات، قطع أول 15 كلمة، ثم إعادة دمجها بمسافات
+    (
+        SELECT string_agg(word, ' ') 
+        FROM (
+            SELECT unnest((string_to_array(trim(h.text), ' '))[1:15]) AS word
+        ) AS words
+    ) || CASE 
+            WHEN array_length(string_to_array(trim(h.text), ' '), 1) > 15 THEN '...' 
+            ELSE '' 
+         END AS hadith_beginning,
+         
+    v.name AS volume_name,
+    b.name AS book_name,
+    c.name AS chapter_name
+FROM public.hadith h
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+WHERE h.type in ('main', 'sub', 'hashiah')
+ORDER BY v.order_index, b.order_index, c.order_index, h.order_index;
+
+Feature 5: Advanced Search (البحث المتقدم)
+
+To be defined later, next version
+
+Description: A unified flexible lookup engine allowing cross-criteria scholarly queries. It targets text phrases, strict location parameters, and checks database categorization tags (type field) concurrently, returning an aggregated transmission string layout.
+
+Inputs:SELECT part: select what to show? hadith, kitab, bab, rawi
+
+FROM and JOIN part
+
+WHERE partsearch_term (Optional Arabic search query text input & select search area (hadith text, rawi, kitab, bab ….).
+
+hadith_type (Optional tag mapping matching database check constraint: 'main', 'hashiah', 'zawaid', etc.).
+
+Filters : volume, book, chapter
+
+Outputs: As reqeusted
+
+Query: NOT fined yet
+
+SELECT
+    h.id AS hadith_id,
+    h.hadith_number,
+    h.text AS hadith_text,
+    h.type AS hadith_type,
+    h.page_number,
+    h.takhreej,
+    c.name AS chapter_name,
+    b.name AS book_name,
+    v.name AS volume_name,
+    COALESCE(string_agg(r.name, ' ← '), 'No narrators listed') AS narrator_chain
+FROM public.hadith h
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+LEFT JOIN public.hadith_rawi hr ON h.id = hr.hadith_id
+LEFT JOIN public.rawis r ON hr.rawi_id = r.id
+WHERE
+    (:search_term IS NULL OR public.clean_arabic_text(h.text) ILIKE '%' || public.clean_arabic_text(:search_term) || '%') AND
+    (:hadith_type IS NULL OR h.type = :hadith_type) AND
+    (:p_volume_id IS NULL OR v.id = :p_volume_id) AND
+    (:p_book_id IS NULL OR b.id = :p_book_id) AND
+    (:p_chapter_id IS NULL OR c.id = :p_chapter_id)
+GROUP BY
+    h.id, h.hadith_number, h.text, h.type, h.page_number, h.takhreej,
+    c.name, b.name, v.name,
+    v.order_index, b.order_index, c.order_index
+ORDER BY v.order_index, b.order_index, c.order_index, h.order_index;
+
+Feature 6: Tree Book Browser (عرض المجلدات والأحاديث)
+
+Description: A "Shamela-like" tree browser.
+
+User inputs: choose volume then after loading the list chosing from it
+
+Takhreej تخريج: yes or no
+
+Features:Sidebar with a nested tree after choosing Volume from list: Book -> Chapter.User can choose a Book which display all hadith in the book
+
+If user click on a Chapter it display all hadith in the chapter
+
+Main content area displaying Hadiths sequentially.
+
+Clean typography optimized for Arabic reading (e.g., Amiri or Traditional Arabic font).
+
+Quick "Copy Hadith" button for each Hadith, Book.
+
+Text resizing slider (AA) for adjustable readability font-sizes.
+
+Future enhancement plan: this section will be made more enhanced by adding audio with loop, add inline collapsible footnote for some hadiths for explanation, books … etc, add vocabulary explanation tooltip on some words, search within page, link to rawi biography, utilize page number and original book order … etc.
+
+These functionalities not covered in existing DB yet
+
+Output Scenario: Choose volume
+
+returnArray of books: contains
+
+Array of chapters: contains
+
+Array of main hadiths (split order_index on mains: each main type hadith might followed by other types):
+
+each main could have (sub, part, h_main, h_part):
+
+each sub could have (part, h_main, h_sub)
+
+each part could have (h_main, h_part)
+
+if type is h_main, h_part put it inside box & collect consecutive hadiths with type h_main, h_part in same box
+
+if volume is 7+if in view takhreej on: each hadith has takhreej_full
+
+else each h_main & h_part has thakreej
+
+pagination
+
+Manual pagination chapter table or separate table? Starting chapter, page no
+
+A book split on multiple pages, each page contains multiple chapters
+
+6. General UI/UX & Non-Functional Requirements
+
+Completely RTL: right to left
+
+Mobile-First Design: The platform must be 100% responsive as most memorizers review using mobile phones. All data tables must collapse into responsive cards on mobile screens.
+
+Performance: Search queries must execute in < 200ms.
+
+Export Engine: Implement client-side export any data table result into beautifully formatted Word, Excel, PDF with proper layout styling for Arabic text alignment (RTL).
+
+Environment Security: Store Supabase keys strictly in .env.local. Do not expose service-role keys to the client side.
+
+7. Future Roadmap (To be planned in Architecture)
+
+Self-Testing Module (اختبارات ذاتية): Flashcards and fill-in-the-blank tests for memorization validation.
+
+Audio Integration (صوتيات): Hadith audio playback with repetition controls loops for memorization.
+
+Visual Vocabulary (معاني الكلمات المصورة): Dictionary for strange words (غريب الحديث) backed by illustrative images/videos.
+
+Hadith Commentary (شروحات الأحاديث): Collapsible tabs under each Hadith for detailed explanations
+
+Rawi Biography
+
+Notes:
+
+order rawis by المكثرين
+
+4. Data Architecture & Database Schema
+
+4.1 General Overview
+
+Hierarchical Library Taxonomy: The platform structural dataset tracks a sequential 4-tier tree taxonomy hierarchy: Volume (المجلد) ➔ Book (الكتاب) ➔ Chapter (الباب) ➔ Hadith (الحديث).Concrete Example: Volume: سنن الترمذي ➔ Book: كتاب الإيمان ➔ Chapter: باب: ما الإيمان ➔ Hadith Number 23: "عن أبي هريرة رضي الله عنه..."
+
+Encyclopedia Scope: The overall platform scope is tightly bounded to exactly 12 core volumes.
+
+4.2 Hadith Types & Relational Matrix
+
+The hadith.type discriminator engine runs on an exact structural taxonomy matrix. Text categories dictate specific parenting trees, narrator connectivity dependencies, and cross-volume behavior parameters:
+
+Typology Constraints: Valid categorization fields strictly map to ['main','sub','part', 'h_main', 'h_part'].
+
+Volume Specific Typologies: The structural types h_main and h_part are exclusive context tags that exist only within Volume 7 through Volume 12. They are completely non-existent inside Volumes 1–6.
+
+Hierarchical Text Nesting Rules: hadith follow a programmatic structural inheritance pattern down specific sibling and child loops:Each main text node can act as a parent container housing nested sub, part, h_main, and h_part allocations.
+
+Each sub text node can sequentially house nested subordinate part, h_main, and h_part allocations.
+
+Each part text node can directly house nested sub-records restricted strictly to h_main and h_part.
+
+4.3 Narrator (Rawi) Rules
+
+hadith record with types part and h_part do not have any  narrator so it doesn’t link inside the hadith_rawi  table.
+
+4.4 Takhreej Definition
+
+In  hadith  table, Columns takhreej and takhreej_full values follow these rules:
+
+Volumes 1–6: Both hadith.takhreej and hadith.takhreej_full columns return NULL values across all records falling inside this volume range. So we will ignore it
+
+Volumes 7–12:Full Takhreej: Every single text record tracking inside Volumes 7–12 is has takhreej_full column and is NOT NULL.
+
+Short Takhreej: Column takhreej (short validation text) is strictly reserved for records categorized under the explicit types h_main or h_part. For any other hadith type (main, sub, part) inside all Volumes, the short takhreej field is NULL.
+
+4.5 Supabase System ERD Layout
+
+schema of Supabase:
+
+[volumes]
+
+└── 1 : N ➔ [books]
+
+└── 1 : N ➔ [chapters]
+
+└── 1 : N ➔ [hadith]
+
+├── 1 : N ➔ [audio]
+
+└── M : N ➔ (via hadith_rawi) ➔ [rawis]

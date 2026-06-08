@@ -1,0 +1,1028 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>PRD.md</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="371e3ddb-f02c-8086-8746-c3d91428329f" class="page sans"><header><h1 class="page-title" dir="auto">PRD.md</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><h1 id="371e3ddb-f02c-808a-9847-f34003956311" class="">Product Requirements Document (PRD)</h1></div><div style="display:contents" dir="auto"><h2 id="371e3ddb-f02c-80a1-a28f-f198da221381" class="">1. Project Title</h2></div><div style="display:contents" dir="auto"><p id="371e3ddb-f02c-8070-9e1f-f23210fd0134" class=""><strong>Sheikh Yahya Al-Yahya’s Hadith Books Platform</strong> (موقع كتب الحديث للشيخ يحيى اليحيى)</p></div><div style="display:contents" dir="auto"><h2 id="371e3ddb-f02c-8078-83ee-ef02d99e2428" class="">2. Project Overview</h2></div><div style="display:contents" dir="auto"><p id="371e3ddb-f02c-801b-9571-cb79b9a7a462" class="">An advanced, fast, and responsive web platform designed for Hadith memorizers (الحفاظ). It provides display books, specialized search, filtration, and export capabilities across the Hadith collections (دواوين السنة) authored by Sheikh Yahya Al-Yahya. </p></div><div style="display:contents" dir="auto"><p id="371e3ddb-f02c-80d4-9252-f2a13cfb57bc" class="">The platform acts as a hybrid between &quot;Dorar Net&quot; (الموسوعة الحديثية) for advanced filtration and &quot;Shamela&quot; &amp; “Dalail Academy” for book browsing.</p></div><div style="display:contents" dir="auto"><hr id="371e3ddb-f02c-80cf-91fc-e52031bdfa2a"/></div><div style="display:contents" dir="auto"><h2 id="371e3ddb-f02c-8033-8c2d-fc9895852152" class="">3. System Architecture &amp; Tech Stack (Recommended)</h2></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-805c-a361-eb54e8b751f0" class="bulleted-list"><li style="list-style-type:disc"><strong>Frontend:</strong> Next.js</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80d2-ab9f-edf17a4d2524" class="bulleted-list"><li style="list-style-type:disc"><strong>Backend:</strong> JavaScript supporting frameworks.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8016-953a-cd54b1b08015" class="bulleted-list"><li style="list-style-type:disc"><strong>Database:</strong> Existing Supabase (PostgreSQL) for Data Storage, Authentication, and Full-Text Search.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80ab-871e-f4d336e56c5b" class="bulleted-list"><li style="list-style-type:disc">You can add any other tools needed</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80cd-a35f-eda37969d921" class="bulleted-list"><li style="list-style-type:disc">You can suggest enhacements in architecture, logics, algorithms to approve before executing</li></ul></div><div style="display:contents" dir="auto"><ul id="372e3ddb-f02c-803b-b496-c4fb668fb4d1" class="bulleted-list"><li style="list-style-type:disc">Make each feature in separate page</li></ul></div><div style="display:contents" dir="auto"><hr id="371e3ddb-f02c-80e8-9f47-e846e4aa98da"/></div><div style="display:contents" dir="auto"><h2 id="374e3ddb-f02c-8052-8eef-c82e4e1e06d4" class="">4. Data Architecture &amp; Database Schema</h2></div><div style="display:contents" dir="auto"><h3 id="374e3ddb-f02c-80f7-b854-f708eddb0a4d" class="">4.1 General Overview</h3></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-809f-8913-f400f2f0b1f6" class="bulleted-list"><li style="list-style-type:disc"><strong>Volume (المجلد)</strong> -&gt; <strong>Book (الكتاب)</strong> -&gt; <strong>Chapter (الباب)</strong> -&gt; <strong>Hadith (الحديث)</strong>.<div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80e8-b01e-db91e1506417" class="bulleted-list"><li style="list-style-type:circle">example: المجلد: سنن الترمذي &gt; الكتاب: كتاب الإيمان &gt; باب: ما الإيمان &gt; حديث رقم 23: عن أبي هريرة رضي الله عنه ……</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80b9-ba77-c55262213b42" class="bulleted-list"><li style="list-style-type:disc">There are 12 volumes</li></ul></div><div style="display:contents" dir="auto"><ul id="372e3ddb-f02c-8037-989b-f32a4ccd4f40" class="bulleted-list"><li style="list-style-type:disc">Hadith types &amp; relations: main, sub, part, h_main, h_part<div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-804f-9557-c8a8795d1ce0" class="bulleted-list"><li style="list-style-type:circle">h_main &amp; h_part only for volumes 7+</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80d3-aead-cd9176b155c5" class="bulleted-list"><li style="list-style-type:circle">each main hadith might have sub, part, h_main, h_part</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8014-9b36-ce03b627c810" class="bulleted-list"><li style="list-style-type:circle">each sub hadith might have part, h_main, h_part</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80ca-b86c-fa7e718c4f8b" class="bulleted-list"><li style="list-style-type:circle">each part hadith might have h_main, h_part</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8030-8eab-e9d2cf80a7de" class="bulleted-list"><li style="list-style-type:circle">part &amp; h_part doesn’t have rawi</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80d0-9167-e1d3d6d943eb" class="bulleted-list"><li style="list-style-type:disc">Takhreej: <div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80b5-bb1b-cb67b4cd285a" class="bulleted-list"><li style="list-style-type:circle">volumes 1-6 doesn’t have takhreej or takhreej_full, its null</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-808c-ae64-d07f54c236f3" class="bulleted-list"><li style="list-style-type:circle">from volume 7-12:<div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-809d-8e2a-c07b28d76c53" class="bulleted-list"><li style="list-style-type:square"> each hadith has takhreej_full</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-807e-a2f2-e8d567838cee" class="bulleted-list"><li style="list-style-type:square">h_main, h_part has takhreej (short tahkreej) otherwise its null</li></ul></div></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><p id="371e3ddb-f02c-8024-b003-c8f5e9b04828" class="">The database schema is already implemented in Supabase with the following structural layout:</p></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80e0-80fa-d1eea9767544" class="bulleted-list"><li style="list-style-type:disc"><code>volumes</code> -&gt; <code>books</code> -&gt; <code>chapters</code> -&gt; <code>hadith</code></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-803e-aeea-da56c3ec2de8" class="bulleted-list"><li style="list-style-type:disc"><code>rawis</code> &lt;-&gt; <code>hadith_rawi</code> (Many-to-Many Junction Table) -&gt; <code>hadith</code></li></ul></div><div style="display:contents" dir="auto"><hr id="374e3ddb-f02c-80b1-8fc2-c05e1ec61111"/></div><div style="display:contents" dir="auto"><h3 id="374e3ddb-f02c-8004-94dc-c78028137d53" class="">4.2 Supabase DB schema</h3></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js" integrity="sha512-sijCOJblSCXYYmXdwvqV0tak8QJW5iy2yLB1wAbbLc3OOIueqymizRFWUS/mwKctnzPKpNdPJV3aK1zlDMJmXQ==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><pre id="374e3ddb-f02c-80c2-93a7-c8ff37fb0bd2" class="code code-wrap"><code class="language-sql" style="white-space:pre-wrap;word-break:break-all">CREATE TABLE public.volumes (
+  id bigint NOT NULL DEFAULT nextval(&#x27;volumes_id_seq&#x27;::regclass),
+  name text NOT NULL,
+  description text,
+  order_index integer NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT volumes_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.books (
+  id bigint NOT NULL DEFAULT nextval(&#x27;books_id_seq&#x27;::regclass),
+  volume_id bigint,
+  name text NOT NULL,
+  order_index integer NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT books_pkey PRIMARY KEY (id),
+  CONSTRAINT books_volume_id_fkey FOREIGN KEY (volume_id) REFERENCES public.volumes(id)
+);
+CREATE TABLE public.chapters (
+  id bigint NOT NULL DEFAULT nextval(&#x27;chapters_id_seq&#x27;::regclass),
+  book_id bigint,
+  name text NOT NULL,
+  order_index integer NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT chapters_pkey PRIMARY KEY (id),
+  CONSTRAINT chapters_book_id_fkey FOREIGN KEY (book_id) REFERENCES public.books(id)
+);
+CREATE TABLE public.hadith (
+  id bigint NOT NULL DEFAULT nextval(&#x27;hadith_id_seq&#x27;::regclass),
+  chapter_id bigint,
+  hadith_number text NOT NULL,
+  text text NOT NULL,
+  page_number integer,
+  type text DEFAULT &#x27;main&#x27;::text CHECK (type = ANY (ARRAY[&#x27;main&#x27;::text, &#x27;hadith&#x27;::text, &#x27;part&#x27;::text, &#x27;h_main&#x27;::text, &#x27;h_part&#x27;::text, &#x27;hashiah&#x27;::text, &#x27;zawaid&#x27;::text, &#x27;others&#x27;::text, &#x27;sub&#x27;::text])),
+  created_at timestamp with time zone DEFAULT now(),
+  text_html text,
+  takhreej text,
+  takhreej_full text,
+  order_index integer NOT NULL,
+  CONSTRAINT hadith_pkey PRIMARY KEY (id),
+  CONSTRAINT hadith_chapter_id_fkey FOREIGN KEY (chapter_id) REFERENCES public.chapters(id)
+);
+CREATE TABLE public.rawis (
+  id bigint NOT NULL DEFAULT nextval(&#x27;rawis_id_seq&#x27;::regclass),
+  name text NOT NULL UNIQUE,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT rawis_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.hadith_rawi (
+  hadith_id bigint NOT NULL,
+  rawi_id bigint NOT NULL,
+  CONSTRAINT hadith_rawi_pkey PRIMARY KEY (hadith_id, rawi_id),
+  CONSTRAINT hadith_rawi_hadith_id_fkey FOREIGN KEY (hadith_id) REFERENCES public.hadith(id),
+  CONSTRAINT hadith_rawi_rawi_id_fkey FOREIGN KEY (rawi_id) REFERENCES public.rawis(id)
+);
+CREATE TABLE public.audio (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  hadith_id bigint,
+  audio_url text NOT NULL,
+  duration_seconds integer,
+  reciter_name text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT audio_pkey PRIMARY KEY (id),
+  CONSTRAINT audio_hadith_id_fkey FOREIGN KEY (hadith_id) REFERENCES public.hadith(id)
+);</code></pre></div><div style="display:contents" dir="auto"><hr id="374e3ddb-f02c-8076-b017-fdff392e721f"/></div><div style="display:contents" dir="auto"><h2 id="371e3ddb-f02c-80c8-b9e4-ff94619b0b15" class="">5. Core Features &amp; Functional Requirements</h2></div><div style="display:contents" dir="auto"><h3 id="371e3ddb-f02c-803c-ba52-de8294848371" class="">Sub-feature 1: Filters (to be used as components in features later)</h3></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8016-ab62-e56cee6bdf72" class="bulleted-list"><li style="list-style-type:disc"><strong>Scope:</strong> Reusable UI/UX structural selector modules implemented across <strong>Feature 1</strong> (Narrators Musnad), <strong>Feature 2</strong> (Narrator Search), <strong>Feature 3</strong> (Hadith Text Search), <strong>Feature 4</strong> (Hadith Index), and <strong>Feature 5</strong> (Advanced Search).</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-800c-9656-ffe13d26df93" class="bulleted-list"><li style="list-style-type:disc"><strong>Description:</strong> Provides a cascading, searchable multi-select combobox subsystem (<code>Volume</code> ➔ <code>Book</code> ➔ <code>Chapter</code>) designed via Shadcn UI primitives, enforcing a reactive <code>onChange</code> data relationship pattern while passing relational database BigInt <code>id</code> properties silently behind localized Arabic label values.</li></ul></div><div style="display:contents" dir="auto"><h4 id="379e3ddb-f02c-801d-a57e-df1201b3109f" class="">1. Component Specification Constraints</h4></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80fe-ba7f-dd6aac161ea8" class=""><strong>A. Internal Data Mapping Properties</strong></p></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80ff-9ed2-c5e78a4d9f57" class="bulleted-list"><li style="list-style-type:disc"><strong>Dual-State Bindings:</strong> Every dropdown choice populates an object shape mapping a visible string literal (<code>name</code>) and a hidden relational parameter value (<code>id</code>).<div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8054-ab55-f6162ae4a44c" class="bulleted-list"><li style="list-style-type:circle">Display Field Layer: <code>volumes.name</code> / <code>books.name</code> / <code>chapters.name</code></li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80de-b702-e1aff8003bc1" class="bulleted-list"><li style="list-style-type:circle">Value Payload Layer (Hidden): <code>volumes.id</code> / <code>books.id</code> / <code>chapters.id</code> (Passed immediately to state controllers upon event triggering).</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80ad-953d-fde3f3b59b6a" class="bulleted-list"><li style="list-style-type:disc"><strong>Global Select Option:</strong> The default option initialized at the top of each selector lists as an implicit wildcard (<code>All Volumes</code>, <code>All Books</code>, <code>All Chapters</code>). Selecting this maps the state payload variable directly to a JavaScript <code>null</code> value, enabling backend query scripts to invoke structural <code>IS NULL</code> pass-through clauses.</li></ul></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80de-8b06-cfc4a41d829d" class=""><strong>B. Interface Searchability &amp; Interaction Rules</strong></p></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80e9-8d96-e1f905e098e2" class="bulleted-list"><li style="list-style-type:disc"><strong>Search Context (Auto-complete):</strong> Standard selection inputs convert into filtering text inputs upon focus. The selector runs an in-memory or debounced substring match over Arabic text literals, allowing scholars to jump directly to deep target books (e.g., typing &quot;الجمعة&quot; highlights matching items instantaneously).</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-806f-a505-cecda4f4c1ce" class="bulleted-list"><li style="list-style-type:disc"><strong>Multi-Select Integration:</strong> Dropdowns must support simultaneous multi-item index evaluations (e.g., passing an array of <code>volume_id</code> keys). If active, standard singular primitives transition into array structures passed directly to PostgreSQL <code>ANY</code> or <code>IN</code> array operators.</li></ul></div><div style="display:contents" dir="auto"><h4 id="379e3ddb-f02c-8012-a663-f05c664c90b6" class="">2. Cascading Structural Dependencies &amp; Reactive Workflows</h4></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80c5-bdc1-c2553fc962f3" class="">The dropdown filters maintain a strict hierarchy tree. Mutating a superior state node forces immediate programmatic clean-ups and data-fetching events downstream to prevent corrupted cross-referencing assignments.</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80d9-b36c-e24af84fed46" class="">[Select Volume] ➔ updates local state ➔ resets [Book Select] &amp; [Chapter Select]</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80a0-ab69-f8720c6cd0f4" class="">↓</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80eb-a600-c2dd52d5232b" class="">Triggers API fetch ➔ loads matching Books matching selected volume_id</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80e7-b178-daf4504e0336" class="">↓</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-802e-b479-f130202fb50e" class="">[Select Book]   ➔ updates local state ➔ resets [Chapter Select]</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8083-9563-d0e781e80449" class="">↓</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8001-8fe6-d52ae76d7325" class="">Triggers API fetch ➔ loads matching Chapters matching selected book_id</p></div><div style="display:contents" dir="auto"><h4 id="379e3ddb-f02c-80e4-857e-c3752d78911a" class="">3. Concrete Interaction Scenario (Workflow Case Study)</h4></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-804c-bd54-f1c64404e5ce" class="numbered-list" start="1"><li><strong>Initial Platform Frame Status:</strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8022-b56e-dd0aa68e8d0c" class="bulleted-list"><li style="list-style-type:disc">Volume Dropdown: Active (Populated with all database Volume records via root indexing queries).</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-800e-a61a-e15a1615cc36" class="bulleted-list"><li style="list-style-type:disc">Book Dropdown: Disabled / Locked (Awaiting superior input context).</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80fe-a5b5-fa0998d6d74f" class="bulleted-list"><li style="list-style-type:disc">Chapter Dropdown: Disabled / Locked (Awaiting superior input context).</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-8057-9265-ec7e081ee9d6" class="numbered-list" start="2"><li><strong>Triggering Event Alpha (</strong><code><strong>onVolumeChange</strong></code><strong>):</strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8069-985f-e16afb3e2a96" class="bulleted-list"><li style="list-style-type:disc">The user opens the Volume dropdown, types a query, and selects the volume row containing target legal/ritual categories.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-807a-8902-d0d570fcbbc5" class="bulleted-list"><li style="list-style-type:disc"><strong>State Action:</strong> The system updates <code>selected_volume_id</code> to the record&#x27;s underlying <code>id</code> integer, while wiping any previously cached states for <code>selected_book_id</code> and <code>selected_chapter_id</code> to <code>null</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8010-ab2d-f850ddad2dc9" class="bulleted-list"><li style="list-style-type:disc"><strong>Downstream Action:</strong> The Book dropdown is unlocked and an asynchronous API data retrieval task fires instantly using the following reactive query definition:<div style="display:contents" dir="auto"><pre id="379e3ddb-f02c-80ea-ba58-e9982d3704ef" class="code code-wrap"><code class="language-sql" style="white-space:pre-wrap;word-break:break-all">SELECT id, name FROM public.books
+WHERE volume_id = :selected_volume_id
+ORDER BY order_index;</code></pre></div></li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-8036-b9bf-c1013d5c8e21" class="numbered-list" start="3"><li><strong>Triggering Event Beta (</strong><code><strong>onBookChange</strong></code><strong>):</strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80e5-ace9-ebf61f2e0d24" class="bulleted-list"><li style="list-style-type:disc">The unlocked Book dropdown populates dynamically, showcasing the specialized index text label for emaple: <em>Book of Friday and Eids</em> (<code>كتاب الجمعة والعيدين</code>). The user interacts and selects this item row.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8090-94c4-f0b1399bcab4" class="bulleted-list"><li style="list-style-type:disc"><strong>State Action:</strong> The client store updates <code>selected_book_id</code> with its true <code>id</code> while keeping downstream options isolated.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80c2-afd3-ea97fe1be774" class="bulleted-list"><li style="list-style-type:disc"><strong>Downstream Action:</strong> The Chapter dropdown is unlocked, executing an instant lookup execution targeting immediate child sub-nodes:<div style="display:contents" dir="auto"><pre id="379e3ddb-f02c-8052-a56c-fce69c89095d" class="code code-wrap"><code class="language-sql" style="white-space:pre-wrap;word-break:break-all">SELECT id, name FROM public.chapters
+WHERE book_id = :selected_book_id
+ORDER BY order_index;</code></pre></div></li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-801c-8257-c2f971a0f940" class="numbered-list" start="4"><li><strong>Triggering Event Gamma (</strong><code><strong>onChapterChange</strong></code><strong>):</strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-801e-be22-f30b5033a114" class="bulleted-list"><li style="list-style-type:disc">The Chapter combobox list displays localized entries matching <em>Friday Chapter</em> (<code>باب الجمعة</code>) and <em>Eids Chapter</em> (<code>باب العيدين</code>) with instant auto-complete query matching active.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8019-b109-c7a33f8aa078" class="bulleted-list"><li style="list-style-type:disc">The user clicks <em>Friday Chapter</em> (<code>باب الجمعة</code>). The variable <code>selected_chapter_id</code> commits</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><hr id="379e3ddb-f02c-80cb-ba55-e87ad8561fd1"/></div><div style="display:contents" dir="auto"><h3 id="379e3ddb-f02c-80bb-a778-d031baf6c614" class="">Sub-feature 2: Interactive Hadith Reader (Pop-up View)</h3></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8042-ba65-cc09e9794a92" class="bulleted-list"><li style="list-style-type:disc"><strong>Scope:</strong> Integrated globally across all Data Tables (Features 1, 2, 3, and 4). Triggered when a user clicks on a specific Hadith row.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8025-917e-dd1d0974351d" class="bulleted-list"><li style="list-style-type:disc"><strong>Description:</strong> A modal/dialog component that fetches and reconstructs the complete textual cluster of a Hadith (including its structural siblings, sub-narrations, and footnotes). It dynamically formats the output into a printable, reading-friendly HTML view based on the Volume sequence and Takhreej preferences.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80b0-b882-ce95df3bda10" class="bulleted-list"><li style="list-style-type:disc"><strong>Inputs:</strong> <div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8009-bca8-fa6957d421dc" class="bulleted-list"><li style="list-style-type:circle"> <code>target_hadith_id</code> (The explicit ID of the clicked row).</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8069-bff9-cc99d5f0721f" class="bulleted-list"><li style="list-style-type:circle"><code>show_full_takhreej</code> (Boolean toggle determining whether to show long or short validation strings).</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80b1-b24c-ce96687fc209" class="bulleted-list"><li style="list-style-type:disc"><strong>Outputs:</strong> Formatted HTML/UI content rendering the hierarchical Hadith structure.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80a3-a7fb-e9dcb8c09297" class="bulleted-list"><li style="list-style-type:disc"><strong>Actions:</strong> Copy complete structured text.</li></ul></div><div style="display:contents" dir="auto"><hr id="379e3ddb-f02c-808e-b69f-ed402ec9dd73"/></div><div style="display:contents" dir="auto"><h4 id="379e3ddb-f02c-80b3-87fa-f3a0e7536838" class="">1. Database Query Execution</h4></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8010-8e41-f0a5ca90525c" class="">This query utilizes a single input (<code>:target_hadith_id</code>) to automatically drill up and capture the exact hierarchical grouping (same Volume, Book, Chapter, and Hadith Number).</p></div><div style="display:contents" dir="auto"><pre id="379e3ddb-f02c-808e-81c2-da516d28d926" class="code code-wrap"><code class="language-sql" style="white-space:pre-wrap;word-break:break-all">SELECT
+    h.id AS hadith_id,
+    h.hadith_number,
+    h.text AS hadith_text,
+    h.text_html,
+    h.type AS hadith_type,
+    h.takhreej AS short_takhreej,
+    h.takhreej_full AS long_takhreej,
+    h.order_index AS hadith_order_index,
+    c.id AS chapter_id,
+    c.name AS chapter_name,
+    b.id AS book_id,
+    b.name AS book_name,
+    v.id AS volume_id,
+    v.name AS volume_name
+FROM public.hadith h
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+WHERE
+    -- Match the extracted structural attributes from the input ID
+    h.hadith_number = (SELECT sub_h.hadith_number FROM public.hadith sub_h WHERE sub_h.id = :target_hadith_id)
+    AND c.id = (SELECT sub_h.chapter_id FROM public.hadith sub_h WHERE sub_h.id = :target_hadith_id)
+    AND b.id = (
+        SELECT sub_c.book_id
+        FROM public.hadith sub_h
+        JOIN public.chapters sub_c ON sub_h.chapter_id = sub_c.id
+        WHERE sub_h.id = :target_hadith_id
+    )
+    AND v.id = (
+        SELECT sub_b.volume_id
+        FROM public.hadith sub_h
+        JOIN public.chapters sub_c ON sub_h.chapter_id = sub_c.id
+        JOIN public.books sub_b ON sub_c.book_id = sub_b.id
+        WHERE sub_h.id = :target_hadith_id
+    )
+ORDER BY
+    h.order_index ASC;</code></pre></div><div style="display:contents" dir="auto"><h4 id="379e3ddb-f02c-80b0-848b-fdcc084c966b" class="">2. Frontend Data Processing: Unified Footnote Grouping Algorithm</h4></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80b0-a87e-f3dbfc962b62" class="">The SQL query returns a flat array of sequence-ordered text segments. To prevent visual clutter, the frontend MUST parse this array using a <strong>Consolidated Footnote Algorithm</strong>.</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-804e-a3a3-d1e27bee1dd2" class=""><strong>Core Rule:</strong> A single parent text (<code>main</code>, <code>sub</code>, or <code>part</code>) must receive a maximum of <strong>ONE</strong> superscript footnote index. Any consecutive sub-nodes (<code>h_main</code>, <code>h_part</code>) that belong to that parent must bundle their content underneath that same single footnote index in the Hashiah section.</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80d5-8e07-ce65f181e90a" class=""><strong>Tree Nesting Hierarchy Rules:</strong></p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80dc-b015-e4b92fa10776" class="">The array always starts with one <code>main</code> node.</p></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-804b-b70c-fe2189d936fc" class="numbered-list" start="1"><li><code><strong>main</strong></code> can contain children: <code>[sub, part, h_main, h_part]</code>.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-80f8-9d41-d0645bb1dfc3" class="numbered-list" start="2"><li><code><strong>sub</strong></code> can contain children: <code>[part, h_main, h_sub]</code>.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-80bb-b441-f6e672b7c49d" class="numbered-list" start="3"><li><code><strong>part</strong></code> can contain children: <code>[h_main, h_part]</code>.</li></ol></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8023-8561-ddf81281e5ba" class=""><strong>Algorithm Logic:</strong></p></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-807c-a995-c82ff05c5647" class="numbered-list" start="1"><li>Initialize <code>footnoteIndex = 1</code>. Track <code>activeMatnBlock</code> and <code>activeHashiahBlock</code>.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-80fb-b8bd-f6683b4a878d" class="numbered-list" start="2"><li><strong>If Node is a Parent (</strong><code><strong>main</strong></code><strong>, </strong><code><strong>sub</strong></code><strong>, </strong><code><strong>part</strong></code><strong>):</strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80dd-acd9-fa55da84e178" class="bulleted-list"><li style="list-style-type:disc">Push a new block to the MATN array. Set it as <code>activeMatnBlock</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8098-8e8d-cb5ee6e5eafb" class="bulleted-list"><li style="list-style-type:disc">Initialize its <code>footnoteIndex</code> as <code>null</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-806e-b9dc-dc759243578a" class="bulleted-list"><li style="list-style-type:disc">Create a new <code>activeHashiahBlock</code> (with a <code>null</code> index and an empty array for items).</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80cd-a04c-e7fda2e27c0b" class="bulleted-list"><li style="list-style-type:disc"><strong>If </strong><code><strong>show_full_takhreej === true</strong></code><strong> AND node has </strong><code><strong>long_takhreej</strong></code><strong>:</strong> * Immediately assign <code>footnoteIndex</code> to <code>activeMatnBlock</code>.<div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-807b-a4be-f9365cd23c04" class="bulleted-list"><li style="list-style-type:circle">Assign <code>footnoteIndex</code> to <code>activeHashiahBlock</code>, push the <code>long_takhreej</code> into its items, and push to the HASHIAH array.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8027-84c0-d509ef7b7ab9" class="bulleted-list"><li style="list-style-type:circle">Increment <code>footnoteIndex++</code>.</li></ul></div></li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-808e-80e5-da7292b9b470" class="numbered-list" start="3"><li><strong>If Node is a Child (</strong><code><strong>h_main</strong></code><strong>, </strong><code><strong>h_part</strong></code><strong>, </strong><code><strong>h_sub</strong></code><strong>):</strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8081-8a79-c4835f943a66" class="bulleted-list"><li style="list-style-type:disc">Look at the <code>activeMatnBlock</code>. If it does NOT have a footnote index yet, assign it the current <code>footnoteIndex</code>, set the <code>activeHashiahBlock</code> index, push it to the HASHIAH array, and increment <code>footnoteIndex++</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-809b-bd0e-fb0c5b2c7fb9" class="bulleted-list"><li style="list-style-type:disc">Push the child&#x27;s <code>text_html</code> and its relevant takhreej (<code>long_takhreej</code> if toggle is true, else <code>short_takhreej</code>) into the existing <code>activeHashiahBlock</code>&#x27;s items array.</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><h4 id="379e3ddb-f02c-80a8-b8f0-ff9a1235cb97" class="">3. Frontend Rendering &amp; UI/UX Logic</h4></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8077-bda6-da0614ecce89" class=""><strong>A. Header Section Layout</strong></p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8014-9e99-eab86f44d97c" class="">Regardless of the volume, the pop-up must always begin with the structural hierarchy centered and stylized:</p></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8041-a60d-d738a7be36d2" class="bulleted-list"><li style="list-style-type:disc"><strong>Top Line:</strong> Volume Name (<code>volume_name</code>).</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80d7-83f9-d7505af75a9e" class="bulleted-list"><li style="list-style-type:disc"><strong>Middle Line:</strong> Book Name (<code>book_name</code>) ➔ Styled with <strong>Bold</strong> and <strong>Red</strong> text.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-802c-a820-d419dadf7eba" class="bulleted-list"><li style="list-style-type:disc"><strong>Bottom Line:</strong> Chapter Name (<code>chapter_name</code>) ➔ Styled with <strong>Bold</strong> and <strong>Green</strong> text.</li></ul></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80e9-8104-c7e74604bc0d" class=""><strong>B. Content Body Generation Rules</strong></p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-804a-aceb-edaa7c302471" class="">The application evaluates the parsed blocks and applies rendering rules based on the volume context.</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-807f-b9ab-e1f7f9747c02" class=""><strong>CASE 1: Early Volumes (Volumes 1 to 6)</strong></p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8073-9dff-d702ac8db497" class=""><em>These volumes do not utilize complex Takhreej or Hashiah splits. Ignore the HASHIAH array.</em></p></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8097-a556-f535e08d2dd5" class="bulleted-list"><li style="list-style-type:disc">If <code>type === &#x27;main&#x27;</code>: Render <code>hadith_number</code> + &quot; - &quot; + <code>text_html</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-805b-b014-e7349e046b79" class="bulleted-list"><li style="list-style-type:disc">If <code>type === &#x27;sub&#x27;</code>: Render &quot;<strong>•</strong>&quot; + <code>text_html</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80bb-87b2-f1ff5b03bcac" class="bulleted-list"><li style="list-style-type:disc">If <code>type === &#x27;part&#x27;</code>: Render <code>text_html</code>.</li></ul></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8045-a033-dcbe6af1f001" class=""><strong>CASE 2: Extended Volumes (Volumes 7 to 12)</strong></p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80a9-9693-c7068b759608" class=""><em>These volumes require a split-screen layout: </em><em><strong>MATN</strong></em><em> (Top Container) and </em><em><strong>HASHIAH</strong></em><em> (Bottom Footnote Container, separated by a visual divider </em><em><code>---</code></em><em>).</em></p></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80df-8d56-d808fadbd2bf" class="bulleted-list"><li style="list-style-type:disc"><strong>MATN Rendering:</strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-802f-b2c6-c05f7d5f2bdf" class="bulleted-list"><li style="list-style-type:circle">Loop through the MATN blocks.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-801b-8c83-d0cc6ca6df8b" class="bulleted-list"><li style="list-style-type:circle">Prefix <code>main</code> with <code>&lt;span class=&quot;font-bold&quot;&gt;{hadith_number} -&lt;/span&gt;</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8098-b82f-c2e259cd476f" class="bulleted-list"><li style="list-style-type:circle">Prefix <code>sub</code> with <code>&lt;span class=&quot;font-bold&quot;&gt;</code><strong>•</strong><code>&lt;/span&gt;</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80b9-9e25-cfdf428f7919" class="bulleted-list"><li style="list-style-type:circle">Render the <code>text_html</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80d2-bbc8-f0ea23fd52bc" class="bulleted-list"><li style="list-style-type:circle"><strong>Critical:</strong> If the block has a <code>footnoteIndex</code>, append <code>&lt;sup class=&quot;text-blue-800&quot;&gt;[{footnoteIndex}]&lt;/sup&gt;</code> to the end of the text. <em>(Agent Note: Use CSS </em><em><code>display: inline</code></em><em> on database paragraph tags to ensure the superscript stays on the same line as the text).</em></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-805c-ac09-ff107e16f503" class="bulleted-list"><li style="list-style-type:disc"><strong>HASHIAH Rendering:</strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-800a-a982-ffdebf9ea06f" class="bulleted-list"><li style="list-style-type:circle">Loop through the populated HASHIAH blocks.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80c4-9d21-d762cc64380a" class="bulleted-list"><li style="list-style-type:circle">Render the footnote number: <code>[{hashiah.index}]</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80fa-8af5-c7e92a6eba7d" class="bulleted-list"><li style="list-style-type:circle">Loop through the inner items of that hashiah block:<div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8099-9df2-c804f201a57d" class="bulleted-list"><li style="list-style-type:square">Render the child&#x27;s <code>text_html</code> (if any).</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80f9-9467-f01c7a724ad8" class="bulleted-list"><li style="list-style-type:square">Render the <code>takhreej</code> string next to it.</li></ul></div></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><hr id="379e3ddb-f02c-80fb-96a2-f6d3741482d0"/></div><div style="display:contents" dir="auto"><h3 id="372e3ddb-f02c-8087-b462-ec99fb4f7f05" class="">Sub-feature 3: Data Export Engine (زر التصدير)</h3></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8059-93d3-fb13d62fa70b" class="bulleted-list"><li style="list-style-type:disc"><strong>Scope:</strong> Integrated and shared globally across <strong>Feature 1</strong> (Narrators Musnad), <strong>Feature 2</strong> (Narrator Search), <strong>Feature 3</strong> (Hadith Text Search), and <strong>Feature 4</strong> (Hadith Index).</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-802d-bdaa-c48b732daa1a" class="bulleted-list"><li style="list-style-type:disc"><strong>Description:</strong> Provides a client-side action button allowing users to download the currently filtered dataset grid into fully-formatted, print-ready document payloads (.docx, .xlsx, .pdf) while dynamically resolving critical Arabic typesetting and text direction standards.</li></ul></div><div style="display:contents" dir="auto"><h3 id="371e3ddb-f02c-800c-b3b6-c9762990d207" class="">Feature 1: Narrators Musnad (مسند الرواة)</h3></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8002-ad51-e7c685db05c8" class="bulleted-list"><li style="list-style-type:disc"><strong>Description:</strong> Helps users find narrators based on their narration frequency and location.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80f3-9fa5-da7c0d04f530" class="bulleted-list"><li style="list-style-type:disc"><strong>Inputs:</strong><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80ab-a4bb-c273c2c14683" class="bulleted-list"><li style="list-style-type:circle"><code>narration_count</code> (Number of times narrated).</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8015-b9e6-f90a4005806f" class="bulleted-list"><li style="list-style-type:circle">Filters: <code>Volume</code>, <code>Book</code>, <code>Chapter</code> (Optional drop-downs).</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80ba-b6ad-f9d87505f1c1" class="bulleted-list"><li style="list-style-type:disc"><strong>Outputs:</strong> A responsive data table containing:<div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-802b-86e7-cf4e61fbb1d2" class="bulleted-list"><li style="list-style-type:circle">Narrator Name, ID (اسم الراوي)</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8023-815c-e6047e584869" class="bulleted-list"><li style="list-style-type:circle">Hadith id, number, text, type (طرف الحديث)</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8015-8f15-f17bb9c90cc2" class="bulleted-list"><li style="list-style-type:circle">Volume, Book, Chapter name.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80ae-8591-f122c818f761" class="bulleted-list"><li style="list-style-type:disc"><strong>Actions:</strong><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8094-b3f6-c0a6243c8c8b" class="bulleted-list"><li style="list-style-type:circle">Export to Word/Excel/PDF.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-800e-89d1-cb3516620493" class="bulleted-list"><li style="list-style-type:circle">View full hadith by clicking row</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8010-bbe6-d5a09b3cdf60" class="bulleted-list"><li style="list-style-type:disc"><strong>Query:</strong></li></ul></div><div style="display:contents" dir="auto"><pre id="371e3ddb-f02c-8035-aca6-cacc9ef4c13b" class="code code-wrap"><code class="language-sql" style="white-space:pre-wrap;word-break:break-all">CREATE OR REPLACE FUNCTION get_narrator_musnad(
+    p_narration_count INT DEFAULT 1,
+    p_volume_id INT DEFAULT NULL,
+    p_book_id INT DEFAULT NULL,
+    p_chapter_id INT DEFAULT NULL
+)
+RETURNS TABLE (
+    rawi_id INT,
+    rawi_name TEXT,
+    hadith_id INT,
+    hadith_number INT,
+    hadith_text TEXT,
+    hadith_type TEXT,
+    chapter_name TEXT,
+    book_name TEXT,
+    volume_name TEXT
+) 
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    RETURN QUERY
+    WITH FilteredRawis AS (
+        SELECT 
+            hr.rawi_id
+        FROM public.hadith_rawi hr
+        JOIN public.hadith h ON hr.hadith_id = h.id
+        JOIN public.chapters c ON h.chapter_id = c.id
+        JOIN public.books b ON c.book_id = b.id
+        JOIN public.volumes v ON b.volume_id = v.id
+        WHERE 
+            (p_volume_id IS NULL OR v.id = p_volume_id) AND
+            (p_book_id IS NULL OR b.id = p_book_id) AND
+            (p_chapter_id IS NULL OR c.id = p_chapter_id)
+        GROUP BY hr.rawi_id
+        HAVING COUNT(hr.hadith_id) = p_narration_count
+    )
+    SELECT 
+        r.id AS rawi_id,
+        r.name AS rawi_name,
+        h.id AS hadith_id,
+        h.hadith_number,
+        h.text AS hadith_text,
+        h.type AS hadith_type,
+        c.name AS chapter_name,
+        b.name AS book_name,
+        v.name AS volume_name
+    FROM public.rawis r
+    JOIN FilteredRawis fr ON r.id = fr.rawi_id
+    JOIN public.hadith_rawi hr ON r.id = hr.rawi_id
+    JOIN public.hadith h ON hr.hadith_id = h.id
+    JOIN public.chapters c ON h.chapter_id = c.id
+    JOIN public.books b ON c.book_id = b.id
+    JOIN public.volumes v ON b.volume_id = v.id
+    WHERE 
+        (p_volume_id IS NULL OR v.id = p_volume_id) AND
+        (p_book_id IS NULL OR b.id = p_book_id) AND
+        (p_chapter_id IS NULL OR c.id = p_chapter_id)
+    ORDER BY r.name, h.hadith_number;
+END;
+$$;</code></pre></div><div style="display:contents" dir="auto"><h3 id="371e3ddb-f02c-800e-acde-ce6a439a414d" class="">Feature 2: Narrator Search (البحث في الرواة)</h3></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8073-85d3-d9b013d52d01" class="bulleted-list"><li style="list-style-type:disc"><strong>Description:</strong> Search for a specific narrator and see all their narrations.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80f1-a18e-c537cae8e9b6" class="bulleted-list"><li style="list-style-type:disc"><strong>Inputs:</strong><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80fc-997e-f0eae76645b5" class="bulleted-list"><li style="list-style-type:circle"><code>rawi_id</code> (Text search with auto-complete/fuzzy match from dropdown list or choose from the list).<div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80e6-a4e9-dae0978b6546" class="bulleted-list"><li style="list-style-type:square">case: ابن عمر، أبو عبد الرحمن، عبد الله بن عمر ( name, other_names with separate flag)</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8008-a636-fde92d971dad" class="bulleted-list"><li style="list-style-type:square">auto-complete case : tooltip, search on other_names </li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-809b-9349-cd7b6b6300e5" class="bulleted-list"><li style="list-style-type:circle">Filters: <code>Volume</code>, <code>Book</code>, <code>Chapter</code>.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-802b-b5fd-f83cbe02bfc5" class="bulleted-list"><li style="list-style-type:disc"><strong>Outputs:</strong> A structured table showing the narrator&#x27;s Hadiths (اطراف المرويات) mapped with their exact locations (Volume, Book, Chapter, Hadith Number).</li></ul></div><div style="display:contents" dir="auto"><ul id="372e3ddb-f02c-8024-982b-f25a10a2c50f" class="bulleted-list"><li style="list-style-type:disc">need to handle multiple rawi</li></ul></div><div style="display:contents" dir="auto"><ul id="372e3ddb-f02c-80e2-95a1-f7a001094b69" class="bulleted-list"><li style="list-style-type:disc"><strong>Query:</strong> </li></ul></div><div style="display:contents" dir="auto"><pre id="372e3ddb-f02c-80ae-a3d0-e97bdefff32c" class="code code-wrap"><code class="language-sql" style="white-space:pre-wrap;word-break:break-all">SELECT 
+    r.id AS rawi_id,
+    r.name AS rawi_name,
+    h.id AS hadith_id,
+    h.hadith_number AS hadith_name,
+    h.text AS hadith_text,
+    h.type AS hadith_type,
+    c.name AS chapter_name,
+    b.name AS book_name,
+    v.name AS volume_name
+FROM public.rawis r
+JOIN public.hadith_rawi hr ON r.id = hr.rawi_id
+JOIN public.hadith h ON hr.hadith_id = h.id
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+WHERE 
+    -- 1. Filter by the specific Rawi ID
+    r.id = [rawi_id]  -- Replace [rawi_id] with your input rawi_id
+    
+    -- 2. Optional Hierarchical Filters
+        AND (p_volume_id IS NULL OR v.id = p_volume_id) AND
+        (p_book_id IS NULL OR b.id = p_book_id) AND
+        (p_chapter_id IS NULL OR c.id = p_chapter_id)
+ORDER BY v.order_index, b.order_index, c.order_index, h.hadith_number;</code></pre></div><div style="display:contents" dir="auto"><h3 id="371e3ddb-f02c-80d1-9e46-f7d99927b7a5" class="">Feature 3: Hadith Text Search (البحث في الأحاديث)</h3></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-807c-8bbf-e0bce45da21c" class="bulleted-list"><li style="list-style-type:disc"><strong>Description:</strong> Global exact or fuzzy search within Hadith texts / Full-text or phrase search inside the body of the Hadiths.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8010-9816-c92efbe97a0f" class="bulleted-list"><li style="list-style-type:disc"><strong>Inputs:</strong><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-800d-b7d9-d653114e07b9" class="bulleted-list"><li style="list-style-type:circle"><code>search_query</code> (Word, phrase, or sentence. e.g., &quot;أي العمل أفضل&quot;).</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80d6-b380-d75b4674863a" class="bulleted-list"><li style="list-style-type:circle">Filters: <code>Volume</code>, <code>Book</code>, <code>Chapter</code>.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-808f-a366-e0a901647f94" class="bulleted-list"><li style="list-style-type:disc"><strong>Outputs:</strong> Highlighted search results table.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80d4-b9fa-e36dcb239843" class="bulleted-list"><li style="list-style-type:disc"><strong>Query: </strong></li></ul></div><div style="display:contents" dir="auto"><pre id="371e3ddb-f02c-80d6-aff2-fec440bc69e7" class="code code-wrap"><code class="language-sql" style="white-space:pre-wrap;word-break:break-all">-- ================ البحث في الحديث =====================
+SELECT 
+    h.id AS hadith_id,
+    h.hadith_number AS hadith_name,
+    h.text AS hadith_text,
+    h.type AS hadith_type,
+    c.name AS chapter_name,
+    b.name AS book_name,
+    v.name AS volume_name,
+    string_agg(r.name, &#x27;, &#x27;) AS narrators
+FROM public.hadith h
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+LEFT JOIN public.hadith_rawi hr ON h.id = hr.hadith_id
+LEFT JOIN public.rawis r ON hr.rawi_id = r.id
+WHERE 
+    -- The Text Search
+    -- This makes the search dynamic and independent of Hamza/Tashkeel
+    public.normalize_ar(h.text) ILIKE public.normalize_ar(&#x27;%[input_text]%&#x27;) 
+    
+    -- Hierarchical Filters
+        AND (p_volume_id IS NULL OR v.id = p_volume_id) AND
+        (p_book_id IS NULL OR b.id = p_book_id) AND
+        (p_chapter_id IS NULL OR c.id = p_chapter_id)
+GROUP BY 
+    h.id, 
+    c.name, 
+    b.name, 
+    v.name, 
+    v.order_index,
+    b.order_index,
+    c.order_index  
+ORDER BY 
+    v.order_index, 
+    b.order_index, 
+    c.order_index, 
+    h.order_index;
+</code></pre></div><div style="display:contents" dir="auto"><p id="374e3ddb-f02c-80e9-9196-feade1c691b6" class="">
+</p></div><div style="display:contents" dir="auto"><h3 id="374e3ddb-f02c-8051-80de-fce9eeb9ff0b" class="">Feature 4: Hadith Index (فهرس طرف الحديث)</h3></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8079-b130-c1876183322c" class="bulleted-list"><li style="list-style-type:disc"><strong>Description:</strong> Generates a lightweight, fast-loading table of contents index for all Hadiths. It truncates the full vocalized text dynamically to display only the first 15 words as an incipit (طرف الحديث) alongside its exact structural library positions.</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80f9-9477-dd083f087784" class="bulleted-list"><li style="list-style-type:disc"><strong>Inputs:</strong> Filters : <code>volume</code>, <code>book</code>, <code>chapter</code> </li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80c7-97df-e8b9d0a4d2aa" class="bulleted-list"><li style="list-style-type:disc"><strong>Outputs:</strong> A structured data grid returning:<div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8099-8b3e-ed629b641769" class="bulleted-list"><li style="list-style-type:circle">Hadith ID (<code>hadith_id</code>), Hadith Number (<code>hadith_number</code>).</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8046-8ad6-f165a3ec878c" class="bulleted-list"><li style="list-style-type:circle">Hadith Incipit (<code>hadith_beginning</code>) (First 15 words cleanly stripped from trailing whitespaces with &quot;...&quot; appended if truncated).</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80aa-ada3-e409794b8e17" class="bulleted-list"><li style="list-style-type:circle">Hierarchy context structural strings: Volume Name (<code>volume_name</code>), Book Name (<code>book_name</code>), Chapter Name (<code>chapter_name</code>).</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80c3-a984-c06203225281" class="bulleted-list"><li style="list-style-type:disc"><strong>Actions:</strong> Export to Word/Excel/PDF, Dynamic text filtering, and deep-linking to full reader view upon row interaction.</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80a7-b1e8-de8dce941a95" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-yellow_background"><strong>Future plan</strong></mark><mark class="highlight-yellow_background">: Clean data manually: add hadith_beginning column in hadith</mark></li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80ce-80f9-f8126fb2d81c" class="bulleted-list"><li style="list-style-type:disc"><strong>Query:</strong></li></ul></div><div style="display:contents" dir="auto"><pre id="374e3ddb-f02c-8088-9b26-c968683ef70f" class="code code-wrap"><code class="language-sql" style="white-space:pre-wrap;word-break:break-all">SELECT 
+    h.id AS hadith_id,
+    h.hadith_number,
+    
+    -- تحويل النص لمصفوفة كلمات، قطع أول 15 كلمة، ثم إعادة دمجها بمسافات
+    (
+        SELECT string_agg(word, &#x27; &#x27;) 
+        FROM (
+            SELECT unnest((string_to_array(trim(h.text), &#x27; &#x27;))[1:15]) AS word
+        ) AS words
+    ) || CASE 
+            WHEN array_length(string_to_array(trim(h.text), &#x27; &#x27;), 1) &gt; 15 THEN &#x27;...&#x27; 
+            ELSE &#x27;&#x27; 
+         END AS hadith_beginning,
+         
+    v.name AS volume_name,
+    b.name AS book_name,
+    c.name AS chapter_name
+FROM public.hadith h
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+WHERE h.type in (&#x27;main&#x27;, &#x27;sub&#x27;, &#x27;hashiah&#x27;)
+ORDER BY v.order_index, b.order_index, c.order_index, h.order_index;</code></pre></div><div style="display:contents" dir="auto"><h3 id="374e3ddb-f02c-8043-b43c-c2a7834ea89a" class="">Feature 5: Advanced Search (البحث المتقدم)</h3></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8016-a0b6-ee8d9401aebb" class="bulleted-list"><li style="list-style-type:disc">To be defined later, next version</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8007-97d1-ec7e5fc13fd1" class="bulleted-list"><li style="list-style-type:disc"><strong>Description:</strong> A unified flexible lookup engine allowing cross-criteria scholarly queries. It targets text phrases, strict location parameters, and checks database categorization tags (<code>type</code> field) concurrently, returning an aggregated transmission string layout.</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80e9-b767-cdddcf6dd271" class="bulleted-list"><li style="list-style-type:disc"><strong>Inputs:</strong><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8076-b202-c4e5dac8873f" class="bulleted-list"><li style="list-style-type:circle">SELECT part: select what to show? hadith, kitab, bab, rawi</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80f5-9d66-ce795114a160" class="bulleted-list"><li style="list-style-type:circle">FROM and JOIN part</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-80b7-94c8-c13db0ae7bb8" class="bulleted-list"><li style="list-style-type:circle">WHERE part<div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8084-ae13-e18227510fea" class="bulleted-list"><li style="list-style-type:square"><code>search_term</code> (Optional Arabic search query text input &amp; select search area (hadith text, rawi, kitab, bab ….).</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8084-8be6-f9fce74fdf2a" class="bulleted-list"><li style="list-style-type:square"><code>hadith_type</code> (Optional tag mapping matching database check constraint: &#x27;main&#x27;, &#x27;hashiah&#x27;, &#x27;zawaid&#x27;, etc.).</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8045-b147-d9665fd20fdf" class="bulleted-list"><li style="list-style-type:square">Filters : volume, book, chapter</li></ul></div></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-8045-8382-e1ef7da90c54" class="bulleted-list"><li style="list-style-type:disc"><strong>Outputs:</strong> As reqeusted</li></ul></div><div style="display:contents" dir="auto"><ul id="374e3ddb-f02c-808b-8b3d-f8b9ee132757" class="bulleted-list"><li style="list-style-type:disc"><strong>Query: NOT fined yet</strong></li></ul></div><div style="display:contents" dir="auto"><pre id="374e3ddb-f02c-8064-a632-d0ff2cda945c" class="code code-wrap"><code class="language-sql" style="white-space:pre-wrap;word-break:break-all">SELECT
+    h.id AS hadith_id,
+    h.hadith_number,
+    h.text AS hadith_text,
+    h.type AS hadith_type,
+    h.page_number,
+    h.takhreej,
+    c.name AS chapter_name,
+    b.name AS book_name,
+    v.name AS volume_name,
+    COALESCE(string_agg(r.name, &#x27; ← &#x27;), &#x27;No narrators listed&#x27;) AS narrator_chain
+FROM public.hadith h
+JOIN public.chapters c ON h.chapter_id = c.id
+JOIN public.books b ON c.book_id = b.id
+JOIN public.volumes v ON b.volume_id = v.id
+LEFT JOIN public.hadith_rawi hr ON h.id = hr.hadith_id
+LEFT JOIN public.rawis r ON hr.rawi_id = r.id
+WHERE
+    (:search_term IS NULL OR public.clean_arabic_text(h.text) ILIKE &#x27;%&#x27; || public.clean_arabic_text(:search_term) || &#x27;%&#x27;) AND
+    (:hadith_type IS NULL OR h.type = :hadith_type) AND
+    (:p_volume_id IS NULL OR v.id = :p_volume_id) AND
+    (:p_book_id IS NULL OR b.id = :p_book_id) AND
+    (:p_chapter_id IS NULL OR c.id = :p_chapter_id)
+GROUP BY
+    h.id, h.hadith_number, h.text, h.type, h.page_number, h.takhreej,
+    c.name, b.name, v.name,
+    v.order_index, b.order_index, c.order_index
+ORDER BY v.order_index, b.order_index, c.order_index, h.order_index;</code></pre></div><div style="display:contents" dir="auto"><p id="373e3ddb-f02c-8005-8c01-d9c9fc0f9cf9" class="">
+</p></div><div style="display:contents" dir="auto"><h3 id="371e3ddb-f02c-808f-875b-c436da390c00" class="">Feature 6: Tree Book Browser (عرض المجلدات والأحاديث)</h3></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8058-bcc3-de6a388de7e6" class="bulleted-list"><li style="list-style-type:disc"><strong>Description:</strong> A &quot;Shamela-like&quot; tree browser.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8064-a9d7-edfedfab4129" class="bulleted-list"><li style="list-style-type:disc"><strong>User inputs: </strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8067-8526-c68ba3c474d3" class="bulleted-list"><li style="list-style-type:circle">choose volume then after loading the list chosing from it</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8030-8647-fb428b17c1cb" class="bulleted-list"><li style="list-style-type:circle">Takhreej تخريج: yes or no</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8076-9dcc-cd25f08de84c" class="bulleted-list"><li style="list-style-type:disc"><strong>Features:</strong><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80bc-abae-fdc6fe6da094" class="bulleted-list"><li style="list-style-type:circle">Sidebar with a nested tree after choosing Volume from list: Book -&gt; Chapter.<div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80e6-af9a-ec124e3b5d1c" class="bulleted-list"><li style="list-style-type:square">User can choose a Book which display all hadith in the book</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-806d-a744-cf2be228d285" class="bulleted-list"><li style="list-style-type:square">If user click on a Chapter it display all hadith in the chapter</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80f0-aa23-d214e3e3c813" class="bulleted-list"><li style="list-style-type:circle">Main content area displaying Hadiths sequentially.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-801c-b143-cb097a977573" class="bulleted-list"><li style="list-style-type:circle">Clean typography optimized for Arabic reading (e.g., Amiri or Traditional Arabic font).</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80f3-ba82-cf5ff7980058" class="bulleted-list"><li style="list-style-type:circle">Quick &quot;Copy Hadith&quot; button for each Hadith, Book.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8074-bc35-cd218abbfc53" class="bulleted-list"><li style="list-style-type:circle">Text resizing slider (AA) for adjustable readability font-sizes.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-808e-8695-c8db6861d01b" class="bulleted-list"><li style="list-style-type:disc"><strong>Future enhancement plan:</strong> <div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80db-821a-cce4b1c3b18f" class="bulleted-list"><li style="list-style-type:circle">this section will be made more enhanced by adding audio with loop, add inline collapsible footnote for some hadiths for explanation, books … etc, add vocabulary explanation tooltip on some words, search within page, link to rawi biography, utilize page number and original book order … etc.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-803e-890d-d982abcab8d8" class="bulleted-list"><li style="list-style-type:circle">These functionalities not covered in existing DB yet</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80c3-966a-cb24490b93f1" class="bulleted-list"><li style="list-style-type:disc"><strong>Output Scenario: </strong><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-8087-aba1-e8e9dd5da181" class="numbered-list" start="1"><li>Choose volume</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-801c-9d57-ff9932b947df" class="numbered-list" start="2"><li>return<div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8015-a428-d48ad6832218" class="">Array of books: contains</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8008-8911-d161b5350f0f" class="">Array of chapters: contains</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8078-8da5-ffa97f5ca3ef" class="">Array of main hadiths (split order_index on mains: each main type hadith might followed by other types):</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80f6-b8f5-f9aecd944aba" class="">each main could have (sub, part, h_main, h_part):</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8078-9083-db67976bd073" class="">each sub could have (part, h_main, h_sub)</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8056-adcf-d3fcb6b07b9d" class="">each part could have (h_main, h_part)</p></div></li></ol></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80ce-8975-e0e4b0b8871d" class="bulleted-list"><li style="list-style-type:circle">if type is h_main, h_part put it inside box &amp; collect consecutive hadiths with type h_main, h_part in same box</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-808c-ac6c-ee3b3b611596" class="bulleted-list"><li style="list-style-type:circle">if volume is 7+<div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80b2-a9cf-ff0fd3df0d98" class="bulleted-list"><li style="list-style-type:square">if in view takhreej on: each hadith has takhreej_full</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80a7-8fb8-ec7dd37d9e01" class="bulleted-list"><li style="list-style-type:square">else each h_main &amp; h_part has thakreej</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80e6-a7f1-fd99296ab866" class="bulleted-list"><li style="list-style-type:circle">pagination</li></ul></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-801c-a512-c2b423223b22" class="">Manual pagination chapter table or separate table? Starting chapter, page no</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8003-9d88-c99d92eede68" class="">A book split on multiple pages, each page contains multiple chapters</p></div></li></ul></div><div style="display:contents" dir="auto"><hr id="379e3ddb-f02c-80cb-93cf-fde032a71d08"/></div><div style="display:contents" dir="auto"><h2 id="371e3ddb-f02c-803e-9413-d8e147a0cfcf" class="">6. General UI/UX &amp; Non-Functional Requirements</h2></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8039-8778-d290ea9bac6e" class="bulleted-list"><li style="list-style-type:disc"><strong>Completely RTL: </strong>right to left</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-804d-962b-f5823af118ad" class="bulleted-list"><li style="list-style-type:disc"><strong>Mobile-First Design:</strong> The platform must be 100% responsive as most memorizers review using mobile phones. All data tables must collapse into responsive cards on mobile screens.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-8016-b44c-d0f3b5494442" class="bulleted-list"><li style="list-style-type:disc"><strong>Performance:</strong> Search queries must execute in &lt; 200ms.</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-805f-bf5d-c1509d90615a" class="bulleted-list"><li style="list-style-type:disc"><strong>Export Engine: </strong>Implement client-side export any data table result into beautifully formatted Word, Excel, PDF with proper layout styling for Arabic text alignment (RTL).</li></ul></div><div style="display:contents" dir="auto"><ul id="371e3ddb-f02c-80b3-b0a7-fcd6857496cb" class="bulleted-list"><li style="list-style-type:disc"><strong>Environment Security:</strong> Store Supabase keys strictly in <code>.env.local</code>. Do not expose service-role keys to the client side.</li></ul></div><div style="display:contents" dir="auto"><hr id="371e3ddb-f02c-805a-808a-ec602cc20e2e"/></div><div style="display:contents" dir="auto"><h2 id="371e3ddb-f02c-80df-9283-fec812329ff3" class="">7. Future Roadmap (To be planned in Architecture)</h2></div><div style="display:contents" dir="auto"><ol type="1" id="371e3ddb-f02c-80a0-8807-d2588fa4ca4f" class="numbered-list" start="1"><li><strong>Self-Testing Module (اختبارات ذاتية):</strong> Flashcards and fill-in-the-blank tests for memorization validation.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="371e3ddb-f02c-8051-9b90-cc77c0e93f29" class="numbered-list" start="2"><li><strong>Audio Integration (صوتيات):</strong> Hadith audio playback with repetition controls loops for memorization.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="371e3ddb-f02c-8021-ab1c-e1c1175b3cad" class="numbered-list" start="3"><li><strong>Visual Vocabulary (معاني الكلمات المصورة):</strong> Dictionary for strange words (غريب الحديث) backed by illustrative images/videos.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="371e3ddb-f02c-805b-9f48-d67eff81ab84" class="numbered-list" start="4"><li><strong>Hadith Commentary (شروحات الأحاديث):</strong> Collapsible tabs under each Hadith for detailed explanations</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="379e3ddb-f02c-80fe-b721-e0e4e59c9dfa" class="numbered-list" start="5"><li><strong>Rawi Biography</strong></li></ol></div><div style="display:contents" dir="auto"><hr id="372e3ddb-f02c-80c3-bdad-db5f5bc5ab9d"/></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-806a-84b9-d3d4ad5fd847" class="">Notes:</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80e7-bbbb-c8fea4e1da1f" class="">order rawis by المكثرين</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-800a-8374-dfdccdf81904" class="">
+</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80b1-b421-fd0d65ab1004" class="">
+</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80f8-98d5-cc10b6915166" class="">
+</p></div><div style="display:contents" dir="auto"><h2 id="379e3ddb-f02c-8074-8d82-d370f1f5060b" class="">4. Data Architecture &amp; Database Schema</h2></div><div style="display:contents" dir="auto"><h3 id="379e3ddb-f02c-807c-b6d1-f6a207b3e5da" class="">4.1 General Overview</h3></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8062-88aa-f006ae02a83e" class="bulleted-list"><li style="list-style-type:disc"><strong>Hierarchical Library Taxonomy:</strong> The platform structural dataset tracks a sequential 4-tier tree taxonomy hierarchy: <code>Volume</code> (المجلد) ➔ <code>Book</code> (الكتاب) ➔ <code>Chapter</code> (الباب) ➔ <code>Hadith</code> (الحديث).<div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-801d-9950-d9a5668cf020" class="bulleted-list"><li style="list-style-type:circle"><em>Concrete Example:</em> Volume: <em>سنن الترمذي</em> ➔ Book: <em>كتاب الإيمان</em> ➔ Chapter: <em>باب: ما الإيمان</em> ➔ Hadith Number 23: <em>&quot;عن أبي هريرة رضي الله عنه...&quot;</em></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8027-8677-f4689907b226" class="bulleted-list"><li style="list-style-type:disc"><strong>Encyclopedia Scope:</strong> The overall platform scope is tightly bounded to exactly <strong>12 core volumes</strong>.</li></ul></div><div style="display:contents" dir="auto"><h3 id="379e3ddb-f02c-80d3-ab01-cb51b7f07566" class="">4.2 Hadith Types &amp; Relational Matrix</h3></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80c3-8c27-dcc83f047162" class="">The <code>hadith.type</code> discriminator engine runs on an exact structural taxonomy matrix. Text categories dictate specific parenting trees, narrator connectivity dependencies, and cross-volume behavior parameters:</p></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8020-982b-d00119d00994" class="bulleted-list"><li style="list-style-type:disc"><strong>Typology Constraints:</strong> Valid categorization fields strictly map to <code>[&#x27;main&#x27;,&#x27;sub&#x27;,&#x27;part&#x27;, &#x27;h_main&#x27;, &#x27;h_part&#x27;]</code>.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80f9-b638-dceaab89a8b3" class="bulleted-list"><li style="list-style-type:disc"><strong>Volume Specific Typologies:</strong> The structural types <code>h_main</code> and <code>h_part</code> are exclusive context tags that exist <strong>only within Volume 7 through Volume 12</strong>. They are completely non-existent inside Volumes 1–6.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8008-bf77-dcaf070cfca1" class="bulleted-list"><li style="list-style-type:disc"><strong>Hierarchical Text Nesting Rules:</strong> hadith follow a programmatic structural inheritance pattern down specific sibling and child loops:<div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80a6-ac65-d174a1c693cb" class="bulleted-list"><li style="list-style-type:circle">Each <code>main</code> text node can act as a parent container housing nested <code>sub</code>, <code>part</code>, <code>h_main</code>, and <code>h_part</code> allocations.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8053-b78e-edeb0ed68999" class="bulleted-list"><li style="list-style-type:circle">Each <code>sub</code> text node can sequentially house nested subordinate <code>part</code>, <code>h_main</code>, and <code>h_part</code> allocations.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80da-94aa-fba580de170f" class="bulleted-list"><li style="list-style-type:circle">Each <code>part</code> text node can directly house nested sub-records restricted strictly to <code>h_main</code> and <code>h_part</code>.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h3 id="379e3ddb-f02c-809d-9600-e2330b77308f" class="">4.3 Narrator (Rawi) Rules</h3></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8057-87af-f5dbaabd9b8d" class="bulleted-list"><li style="list-style-type:disc">hadith record with types <code><strong>part</strong></code> and <code><strong>h_part</strong></code> do not have any  narrator so it doesn’t link inside the <code>hadith_rawi</code>  table.</li></ul></div><div style="display:contents" dir="auto"><h3 id="379e3ddb-f02c-80eb-9464-ccefe7c049e9" class="">4.4 Takhreej Definition</h3></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80ac-a0d3-e39b57c1e109" class="">In  <code>hadith</code>  table, Columns <code>takhreej</code> and <code>takhreej_full</code> values follow these rules:</p></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8078-8825-c98e81b52bc9" class="bulleted-list"><li style="list-style-type:disc"><strong>Volumes 1–6:</strong> <div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-800c-98b4-d86fae5c0d2b" class="bulleted-list"><li style="list-style-type:circle">Both <code>hadith.takhreej</code> and <code>hadith.takhreej_full</code> columns<strong> return </strong><code><strong>NULL</strong></code><strong> values</strong> across all records falling inside this volume range. So we will ignore it</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8084-8711-eb53470acab2" class="bulleted-list"><li style="list-style-type:disc"><strong>Volumes 7–12:</strong><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-8011-9dab-f7741b6232dc" class="bulleted-list"><li style="list-style-type:circle"><strong>Full Takhreej:</strong> Every single text record tracking inside Volumes 7–12 is has <code><strong>takhreej_full</strong></code> column and is NOT NULL.</li></ul></div><div style="display:contents" dir="auto"><ul id="379e3ddb-f02c-80fb-8723-fde0af4ff7ba" class="bulleted-list"><li style="list-style-type:circle"><strong>Short Takhreej:</strong> Column <code><strong>takhreej</strong></code> (short validation text) is strictly reserved for records categorized under the explicit types <code><strong>h_main</strong></code> or <code><strong>h_part</strong></code>. For any other hadith type (main, sub, part) inside all Volumes, the short <code>takhreej</code> field is <code>NULL</code>.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><hr id="379e3ddb-f02c-8088-ae2e-f57b19c23c83"/></div><div style="display:contents" dir="auto"><h3 id="379e3ddb-f02c-80e4-8e72-dde7b2666e75" class="">4.5 Supabase System ERD Layout</h3></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-802e-8cb8-db47d886ab81" class="">schema of Supabase:</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8057-8e81-f8369470c0d9" class="">[volumes]</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8031-8a0c-f4299697d232" class="">└── 1 : N ➔ [books]</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80c1-bf43-d711bd723509" class="">└── 1 : N ➔ [chapters]</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80f2-9a05-e2a7a659ebe1" class="">└── 1 : N ➔ [hadith]</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-803f-8f5b-d977417a975c" class="">├── 1 : N ➔ [audio]</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8010-971c-c312ed6da1e6" class="">└── M : N ➔ (via hadith_rawi) ➔ [rawis]</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-803a-9cbd-f7f50630f729" class="">
+</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-807b-a5b6-d5de61855035" class="">
+</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-8097-b0ea-c5f2d72e40c3" class="">
+</p></div><div style="display:contents" dir="auto"><p id="379e3ddb-f02c-80b1-9af1-e9354d979d99" class="">
+</p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
