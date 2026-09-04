@@ -14,6 +14,14 @@ const mimeTypes = {
   ".svg": "image/svg+xml"
 };
 
+// Load navbar component once at startup
+let navbarComponent = "";
+try {
+  navbarComponent = fs.readFileSync(path.join(root, "components", "navbar.html"), "utf8");
+} catch (err) {
+  console.warn("Warning: Could not load navbar component:", err.message);
+}
+
 function send(res, status, body, contentType = "text/plain; charset=utf-8") {
   res.writeHead(status, { "Content-Type": contentType });
   res.end(body);
@@ -39,6 +47,14 @@ http.createServer((req, res) => {
 
   fs.readFile(filePath, (err, data) => {
     if (err) return send(res, 404, "Not found");
+    
+    // Inject navbar component into HTML files
+    if (path.extname(filePath) === ".html" && navbarComponent) {
+      let html = data.toString();
+      html = html.replace("<!-- navbar-placeholder -->", navbarComponent);
+      return send(res, 200, html, mimeTypes[".html"]);
+    }
+    
     send(res, 200, data, mimeTypes[path.extname(filePath)] || "application/octet-stream");
   });
 }).listen(port, () => {

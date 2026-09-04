@@ -1,10 +1,12 @@
 (function () {
+
+  // -------------------- ATTRIBUTES --------------------
   const state = {
     client: null,
     filters: null,
-    selectedRawis: [],
-    lastRows: [],
-    lastColumns: [],
+    selectedRawis: [], // bindNarratorsPage
+    lastRows: [], // bindExportButtons
+    lastColumns: [], // bindExportButtons
     page: document.body.dataset.page || "home"
   };
 
@@ -33,8 +35,10 @@
     h_part: "حاشية جزء"
   };
 
+  // -------------------- START --------------------
   document.addEventListener("DOMContentLoaded", init);
 
+  // -------------------- INIT & ROUTING --------------------
   async function init() {
     markActiveNav();
     bindExportButtons();
@@ -43,14 +47,18 @@
     await loadFilterTree();
     initFilters();
 
-    if (state.page === "search") bindSearchPage();
-    if (state.page === "index") bindIndexPage();
-    if (state.page === "narrators") bindNarratorsPage();
-    if (state.page === "musnad") bindMusnadPage();
-    if (state.page === "browse") bindBrowsePage();
-    if (state.page === "hadith") bindHadithPage();
+    // MAIN SECTIONS
+    if (state.page === "search") bindSearchPage(); // البحث في الأحاديث
+    if (state.page === "index") bindIndexPage(); // فهرس الأطراف
+    if (state.page === "narrators") bindNarratorsPage(); // الرواة
+    if (state.page === "musnad") bindMusnadPage(); // مسند الرواة
+    if (state.page === "browse") bindBrowsePage(); // تصفح المجلدات والكتب والأبواب
+
+    // SUPPORT SECTIONS
+    if (state.page === "hadith") bindHadithPage(); // عرض الحديث مع سياقه
   }
 
+  // -------------------- SUPABASE --------------------
   async function initSupabase() {
     const response = await fetch("/api/config");
     const config = await response.json();
@@ -66,6 +74,7 @@
     return data;
   }
 
+  // -------------------- FILTERS --------------------
   async function loadFilterTree() {
     state.filters = await rpc("app_get_filter_tree");
   }
@@ -121,6 +130,7 @@
     };
   }
 
+  // -------------------- UTILS --------------------
   function setStatus(message, isError) {
     const el = document.querySelector("[data-status]");
     if (!el) return;
@@ -128,6 +138,7 @@
     el.classList.toggle("error", Boolean(isError));
   }
 
+  // -------------------- RENDER TABLE & CARDS --------------------
   function setRows(rows, columns) {
     state.lastRows = rows || [];
     state.lastColumns = columns || [];
@@ -200,7 +211,8 @@
         </div>
       </article>`;
   }
-
+  
+  // -------------------- البحث في الأحاديث bindSearchPage --------------------
   function bindSearchPage() {
     const form = document.querySelector("[data-search-form]");
     const results = document.querySelector("[data-results]");
@@ -220,6 +232,7 @@
     });
   }
 
+  // -------------------- bindIndexPage --------------------
   function bindIndexPage() {
     const form = document.querySelector("[data-index-form]");
     const results = document.querySelector("[data-results]");
@@ -227,13 +240,30 @@
       event.preventDefault();
       await runAction(async () => {
         const rows = await rpc("app_get_hadith_index", { ...filterParams(form), p_limit: 300, p_offset: 0 });
-        renderTable(results, rows, ["hadith_id", "hadith_number", "hadith_beginning", "hadith_type", "volume_name", "book_name", "chapter_name"]);
-        setStatus(`عدد النتائج المعروضة: ${rows.length}`);
+
+        // --- NEW CODE: Edit data row by row ---
+        const processedRows = rows.map(row => {
+          // Create a copy of the row so we don't mutate the original data
+          let modifiedRow = { ...row }; 
+          
+          // Check your condition (replace h_part, h_main with your actual target type)
+          if (modifiedRow.hadith_type === 'h_part' || modifiedRow.hadith_type === 'h_main') { 
+            // Append or prepend whatever text you need to the hadith number
+            modifiedRow.hadith_number = modifiedRow.hadith_number + " (حاشية)"; 
+          }
+          
+          return modifiedRow;
+        });
+        // --------------------------------------
+        renderTable(results, processedRows, ["hadith_number", "hadith_beginning", "volume_name", "book_name", "chapter_name"]);
+        //renderTable(results, rows, ["hadith_id", "hadith_number", "hadith_beginning", "hadith_type", "volume_name", "book_name", "chapter_name"]);
+        setStatus(`عدد النتائج المعروضة: ${processedRows.length}`);
       });
     });
     form.requestSubmit();
   }
 
+  // -------------------- الرواة bindNarratorsPage --------------------  
   function bindNarratorsPage() {
     const form = document.querySelector("[data-rawi-form]");
     const rawiInput = form.querySelector("[name=rawi_query]");
@@ -270,6 +300,7 @@
     });
   }
 
+  //// bindNarratorsPage helper
   function renderRawiChips(target) {
     target.innerHTML = state.selectedRawis.map((rawi) => `
       <span class="rawi-chip">${escapeHtml(rawi.rawi_name)}
@@ -283,6 +314,7 @@
     });
   }
 
+  // -------------------- bindMusnadPage --------------------
   function bindMusnadPage() {
     const form = document.querySelector("[data-musnad-form]");
     const results = document.querySelector("[data-results]");
@@ -301,6 +333,7 @@
     });
   }
 
+  // -------------------- bindBrowsePage --------------------
   function bindBrowsePage() {
     const volumeSelect = document.querySelector("[data-browse-volume]");
     const tree = document.querySelector("[data-tree]");
@@ -309,6 +342,7 @@
     volumeSelect.addEventListener("change", () => renderBrowseTree(tree, Number(volumeSelect.value), content));
   }
 
+  //// bindBrowsePage helper
   function renderBrowseTree(tree, volumeId, content) {
     const books = state.filters.books.filter((book) => Number(book.volume_id) === volumeId);
     tree.innerHTML = books.map((book) => {
@@ -327,6 +361,7 @@
     });
   }
 
+  //// bindBrowsePage helper
   async function loadBrowseContent(content, volumeId, bookId, chapterId) {
     await runAction(async () => {
       const showTakhreej = document.querySelector("[name=show_takhreej]").checked;
@@ -342,6 +377,7 @@
     });
   }
 
+  // -------------------- bindHadithPage --------------------
   function bindHadithPage() {
     const target = document.querySelector("[data-hadith-detail]");
     const id = Number(new URLSearchParams(location.search).get("id"));
@@ -355,6 +391,7 @@
     });
   }
 
+  // -------------------- EXPORT --------------------
   function bindExportButtons() {
     document.querySelectorAll("[data-export]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -415,6 +452,8 @@
     link.click();
     URL.revokeObjectURL(url);
   }
+
+  // -------------------- UTILS --------------------
 
   function bindReadingSize() {
     const slider = document.querySelector("[data-reading-size]");

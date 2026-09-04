@@ -12,58 +12,86 @@
 </head>
 <body data-page="home">
   <div class="app-shell">
-    <nav class="navbar navbar-expand-lg topbar">
-      <div class="container-fluid page-wrap py-2">
-        <a class="navbar-brand d-flex align-items-center gap-2 m-0" href="/index.html">
-          <span class="brand-mark">ح</span>
-          <span>كتب الحديث</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="فتح القائمة">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNav">
-          <div class="navbar-nav me-auto gap-1">
-            <a class="nav-link" data-nav="browse" href="/browse.html">عرض الكتب</a>
-            <a class="nav-link" data-nav="search" href="/search.html">البحث في الحديث</a>
-            <a class="nav-link" data-nav="index" href="/hadith-index.html">فهرس الأطراف</a>
-            <a class="nav-link" data-nav="narrators" href="/narrators.html">البحث في الرواة</a>
-            <a class="nav-link" data-nav="musnad" href="/musnad.html">مسند الرواة</a>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <!-- navbar-placeholder -->
 
     <main class="page-wrap">
-      <section class="panel mb-3">
-        <h1 class="page-title">منصة كتب الحديث للشيخ يحيى اليحيى</h1>
-        <p class="page-subtitle">واجهة عربية سريعة لعرض الكتب، البحث، الفهارس، ومسند الرواة.</p>
+      <section class="panel hero-banner">
+        <div class="hero-badge">مكتبة حديثية عربية</div>
+        <h1 class="page-title">منارة العلم في خدمة الحديث الشريف</h1>
+        <p class="page-subtitle">واجهة عربية بسيطة، أنيقة، ومريحة لتصفح الكتب، البحث في الأحاديث، واستكشاف الرواة والفهارس.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/browse.html">تصفح الكتب</a>
+          <a class="btn btn-outline-primary" href="/search.html">البحث الآن</a>
+        </div>
+        <p class="hero-microcopy">بنية علمية واضحة، تصميم هادئ، ونمط إسلامي يبرز جمال النص وأهمية المحتوى.</p>
+      </section>
+
+      <section class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number">20+</span>
+          <div class="stat-label">مجلدات</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">1.8k</span>
+          <div class="stat-label">أحاديث</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">300+</span>
+          <div class="stat-label">أبواب</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">24/7</span>
+          <div class="stat-label">وصول سريع</div>
+        </div>
       </section>
 
       <section class="hero-grid">
         <a class="feature-link" href="/browse.html">
-          <div class="feature-title">عرض المجلدات والأحاديث</div>
-          <p class="feature-copy">تصفح شجري للمجلدات والكتب والأبواب مع عرض النصوص بترتيبها العلمي.</p>
+          <div>
+            <div class="feature-icon">📚</div>
+            <div class="feature-title">عرض الكتب</div>
+            <p class="feature-copy">تصفح المجلدات والكتب والأبواب بأسلوب علمي مرتب وسهل القراءة.</p>
+          </div>
         </a>
         <a class="feature-link" href="/search.html">
-          <div class="feature-title">البحث في الأحاديث</div>
-          <p class="feature-copy">بحث عربي مع تطبيع الهمزات والتشكيل وفلاتر المجلد والكتاب والباب.</p>
+          <div>
+            <div class="feature-icon">🔎</div>
+            <div class="feature-title">البحث في الحديث</div>
+            <p class="feature-copy">ابحث عن النصوص والمواضيع بسهولة مع فلترة دقيقة بحسب المجلد والكتاب والباب.</p>
+          </div>
         </a>
         <a class="feature-link" href="/hadith-index.html">
-          <div class="feature-title">فهرس أطراف الحديث</div>
-          <p class="feature-copy">جدول سريع لأول كلمات الحديث مع موضعه الكامل في الكتاب.</p>
+          <div>
+            <div class="feature-icon">🧭</div>
+            <div class="feature-title">فهرس الأطراف</div>
+            <p class="feature-copy">تصفح أول كلمات الأحاديث واسترجعها بسهولة في مسار واضح ومنظم.</p>
+          </div>
         </a>
         <a class="feature-link" href="/narrators.html">
-          <div class="feature-title">البحث في الرواة</div>
-          <p class="feature-copy">اختر راوياً أو أكثر واعرض المرويات المرتبطة بهم.</p>
+          <div>
+            <div class="feature-icon">👤</div>
+            <div class="feature-title">البحث في الرواة</div>
+            <p class="feature-copy">تعرف على المرويات المرتبطة بكل راوٍ ومعرفة مواضعها في الكتاب.</p>
+          </div>
         </a>
         <a class="feature-link" href="/musnad.html">
-          <div class="feature-title">مسند الرواة</div>
-          <p class="feature-copy">ابحث عن الرواة بحسب عدد المرويات داخل نطاق محدد.</p>
+          <div>
+            <div class="feature-icon">🧾</div>
+            <div class="feature-title">مسند الرواة</div>
+            <p class="feature-copy">استعرض المرويات المليّة حسب الراوي مع تنسيق واضح وسهل للمقارنة.</p>
+          </div>
         </a>
-        <a class="feature-link" href="/search.html">
-          <div class="feature-title">التصدير</div>
-          <p class="feature-copy">تصدير نتائج الجداول إلى Excel أو Word أو صفحة PDF قابلة للطباعة.</p>
-        </a>
+        <!-- <a class="feature-link" href="/search.html">
+          <div>
+            <div class="feature-icon">⬇️</div>
+            <div class="feature-title">التصدير</div>
+            <p class="feature-copy">صدّر النتائج إلى Excel أو Word أو PDF لتسهيل الدراسة، الطباعة، أو المشاركة.</p>
+          </div>
+        </a> -->
+      </section>
+
+      <section class="quote-panel">
+        <p>«من أحبّ أن يعلّم الناس الخير، فليُظهر في عمله الهدوء والوضوح، كما يشرق نور العلم في قلبٍ صافي.»</p>
       </section>
     </main>
   </div>

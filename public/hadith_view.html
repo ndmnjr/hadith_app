@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تصفح المجلدات - الشيخ يحيى اليحيى</title>
+    <script src="<https://cdn.tailwindcss.com>"></script>
+    <link href="<https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap>" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Amiri', serif; background-color: #F3F4F6; }
+        .paper-bg { background-color: #Fdfcf2; } /* لون ورق الشاملة */
+        .inline-p p { display: inline; margin: 0; padding: 0; }
+        /* تنسيق صندوق الحواشي */
+        .hadith-box {
+            background-color: #f8f9fa;
+            border-right: 4px solid #9ca3af;
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <aside class="w-1/4 min-w-[250px] bg-white border-l border-gray-300 shadow-lg flex flex-col">
+        <div class="p-4 bg-gray-800 text-white font-bold text-xl">
+            📚 شجرة المجلدات
+        </div>
+        <div class="p-4 overflow-y-auto flex-1 text-lg">
+            <ul class="space-y-2">
+                <li class="font-bold text-gray-800 cursor-pointer">🔽 أبو داود 1</li>
+                <ul class="pr-6 mt-2 space-y-2 border-r-2 border-gray-200">
+                    <li class="font-bold text-red-700 cursor-pointer">📖 كتاب الإيمان</li>
+                    <ul class="pr-6 mt-2 space-y-2 border-r-2 border-gray-200 text-gray-700">
+                        <li class="cursor-pointer hover:text-green-600 transition">باب البداءة بالحمد</li>
+                        <li class="cursor-pointer hover:text-green-600 transition">باب الاسم الأعظم</li>
+                        <li class="cursor-pointer text-green-700 font-bold">باب: من خصال الشرك</li>
+                    </ul>
+                </ul>
+            </ul>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full relative">
+
+        <header class="bg-white p-4 shadow-sm z-10 flex justify-between items-center border-b border-gray-200">
+            <div class="flex items-center gap-6">
+                <label class="flex items-center gap-2 cursor-pointer font-bold text-gray-700 select-none bg-gray-100 px-4 py-2 rounded-lg border hover:bg-gray-200 transition">
+                    <input type="checkbox" id="takhreej-toggle" class="w-5 h-5 accent-blue-600 rounded cursor-pointer">
+                    عرض التخريج
+                </label>
+
+                <div class="flex items-center bg-gray-100 rounded-lg border overflow-hidden">
+                    <button id="font-increase" class="px-4 py-2 font-bold hover:bg-gray-200 transition border-l">A+</button>
+                    <button id="font-decrease" class="px-4 py-2 font-bold hover:bg-gray-200 transition text-sm">A-</button>
+                </div>
+            </div>
+
+            <button id="copy-btn" class="px-6 py-2 bg-blue-50 text-blue-700 font-bold border border-blue-200 rounded-lg hover:bg-blue-100 transition shadow-sm">
+                نسخ المحتوى 📋
+            </button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 sm:p-8 flex justify-center">
+            <div id="reader-container" class="paper-bg w-full max-w-4xl rounded-xl shadow-md p-8 sm:p-12 text-2xl transition-all duration-300">
+                </div>
+        </div>
+    </main>
+
+    <script>
+        // 1. البيانات الثابتة
+        const hadithData = [
+            {
+                "volume_id": 7, "volume_name": "أبو داود 1", "book_name": "كتاب الإيمان", "chapter_name": "باب البداءة بالحمد في كل أمر ذي بال",
+                "hadith_text_html": '<p class="ql-direction-rtl">عن أبي هريرة رضي الله عنه، قال: قال رسول اللہ ﷺ: <strong>كل كلام لا يبدأ فيه بالحمد لله فهو أجذم</strong>.</p>',
+                "short_takhreej": null, "long_takhreej": "رواه أبو داود (٤٨٠٧)، وصححه ابن حبان (٤٦٢٥).",
+                "hadith_type": "main"
+            },
+            {
+                "volume_id": 7, "volume_name": "أبو داود 1", "book_name": "كتاب الإيمان", "chapter_name": "باب: من خصال الشرك",
+                "hadith_text_html": '<p class=\\"ql-direction-rtl\\">عن عبد الله بن مسعود رضي الله عنه، قال: سمعت رسول اللہ ﷺ يقول: <strong>إن الرقى والتمائم والتولة شرك.</strong></p>',
+                "short_takhreej": null, "long_takhreej": "أخرجه أبو داود (۳۸۷۹) ، ورواه ابن ماجه (٣٥٣٠).",
+                "hadith_type": "main"
+            },
+            {
+                "volume_id": 7, "volume_name": "أبو داود 1", "book_name": "كتاب الإيمان", "chapter_name": "باب: من خصال الشرك",
+                "hadith_text_html": '<p class=\\"ql-direction-rtl\\"><span style=\\"color: red;\\">وَفِي حَدِيثِ عُقْبَةَ بْنِ عَامِرٍ:</span> <strong style=\\"color: red;\\">مَنْ تَعَلَّقَ نَمِيمَةٌ فَلَا أَتمَ اللهُ لَهُ، وَمَنْ تَعَلَّقَ وَدَعَةٌ فَلَا وَدَّعَ اللَّهُ لَهُ.</strong></p>',
+                "short_takhreej": "رواه أحمد", "long_takhreej": "رواه أحمد (١٧٦٧٦)، وصححه ابن حبان (٦٠٨٦).",
+                "hadith_type": "h_main"
+            },
+            {
+                "volume_id": 7, "volume_name": "أبو داود 1", "book_name": "كتاب الإيمان", "chapter_name": "باب: من خصال الشرك",
+                "hadith_text_html": '<p class=\\"ql-direction-rtl\\"><span style=\\"color: red;\\">وَفِي رِوَايَةٍ:</span> <strong style=\\"color: red;\\">مَنْ عَلَّقَ تَمِيمَةٌ فَقَدْ أَشْرَكَ.</strong></p>',
+                "short_takhreej": "رواها أحمد", "long_takhreej": "رواها أحمد (١٧٦٩٤) ، وجودها الصعدي.",
+                "hadith_type": "h_part"
+            },
+            {
+                "volume_id": 7, "volume_name": "أبو داود 1", "book_name": "كتاب الإيمان", "chapter_name": "باب: من خصال الشرك",
+                "hadith_text_html": '<p class=\\"ql-direction-rtl\\"><span style=\\"color: red;\\">وَفِي حَدِيثِ عَبْدِ اللَّهِ بْنِ عُكَيمٍ:</span> <strong style=\\"color: red;\\">مَنْ تعلقَ شَيْئًا وَكِلَ إِلَيْهِ.</strong></p>',
+                "short_takhreej": "رواه الترمذي", "long_takhreej": "رواه الترمذي (٢٢٠٢- ٢٢٠٣).",
+                "hadith_type": "h_main"
+            }
+        ];
+
+        // 2. حالة المتغيرات
+        let isTakhreejOn = false;
+        let currentFontSize = 24; // 24px is standard text-2xl
+
+        // 3. خوارزمية التجميع (Grouping Algorithm)
+        function processHadiths(data) {
+            let processed = [];
+            let currentBox = null;
+
+            data.forEach(item => {
+                if (['h_main', 'h_part', 'h_sub'].includes(item.hadith_type)) {
+                    if (!currentBox) currentBox = [];
+                    currentBox.push(item);
+                } else {
+                    // إذا كان هناك صندوق نشط، أغلقه وادفعه للمصفوفة
+                    if (currentBox) {
+                        processed.push({ isBox: true, items: currentBox });
+                        currentBox = null;
+                    }
+                    // ادفع الحديث الأساسي
+                    processed.push({ isBox: false, item: item });
+                }
+            });
+            // الدفع النهائي لأي صندوق متبقي
+            if (currentBox) processed.push({ isBox: true, items: currentBox });
+
+            return processed;
+        }
+
+        // 4. دالة الرسم
+        function renderContent() {
+            const container = document.getElementById('reader-container');
+            if (!hadithData || hadithData.length === 0) return;
+
+            // رسم الترويسة
+            const headerInfo = hadithData[0];
+            let htmlString = `
+                <div class="text-center mb-10 pb-6 border-b-2 border-gray-300/50">
+                    <div class="text-gray-500 text-xl mb-3">${headerInfo.volume_name}</div>
+                    <div class="text-4xl font-bold text-red-700 mb-3">${headerInfo.book_name}</div>
+                    <div class="text-3xl font-bold text-green-700">${headerInfo.chapter_name}</div>
+                </div>
+            `;
+
+            // معالجة البيانات وبناء الشجرة
+            const groupedData = processHadiths(hadithData);
+
+            groupedData.forEach(group => {
+                if (!group.isBox) {
+                    // --- عرض الأحاديث العادية (main, sub, part) ---
+                    const row = group.item;
+                    let prefix = row.hadith_type === 'sub' ? '<span class="text-blue-600 font-bold ml-2">(*)</span>' : '';
+
+                    htmlString += `<div class="mb-6 leading-loose inline-p text-justify">
+                        ${prefix} ${row.hadith_text_html}
+                    `;
+
+                    // إذا كان التخريج مفعل والمجلد 7+
+                    if (isTakhreejOn && row.volume_id >= 7 && row.long_takhreej) {
+                        htmlString += `<span class="block text-gray-500 text-[0.85em] mt-2 border-t border-gray-200 pt-1">📚 التخريج: ${row.long_takhreej}</span>`;
+                    }
+                    htmlString += `</div>`;
+
+                } else {
+                    // --- عرض الصندوق المجمع (Box) لأحاديث الحواشي ---
+                    htmlString += `<div class="hadith-box space-y-4">`;
+
+                    group.items.forEach(row => {
+                        htmlString += `<div class="leading-loose inline-p text-justify">`;
+                        htmlString += row.hadith_text_html;
+
+                        // منطق التخريج داخل الصندوق
+                        if (row.volume_id >= 7) {
+                            if (isTakhreejOn && row.long_takhreej) {
+                                htmlString += `<span class="block text-gray-500 text-[0.85em] mt-1 bg-white p-2 rounded border">📚 ${row.long_takhreej}</span>`;
+                            } else if (!isTakhreejOn && row.short_takhreej) {
+                                htmlString += `<span class="text-blue-700 font-bold mx-2 text-[0.85em]">(${row.short_takhreej})</span>`;
+                            }
+                        }
+                        htmlString += `</div>`;
+                    });
+
+                    htmlString += `</div>`;
+                }
+            });
+
+            container.innerHTML = htmlString;
+        }
+
+        // 5. الأحداث والتفاعلات
+        document.getElementById('takhreej-toggle').addEventListener('change', (e) => {
+            isTakhreejOn = e.target.checked;
+            renderContent();
+        });
+
+        // تكبير وتصغير الخط
+        const reader = document.getElementById('reader-container');
+        document.getElementById('font-increase').addEventListener('click', () => {
+            if(currentFontSize < 40) { currentFontSize += 2; reader.style.fontSize = `${currentFontSize}px`; }
+        });
+        document.getElementById('font-decrease').addEventListener('click', () => {
+            if(currentFontSize > 16) { currentFontSize -= 2; reader.style.fontSize = `${currentFontSize}px`; }
+        });
+
+        // النسخ
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            navigator.clipboard.writeText(reader.innerText).then(() => {
+                const btn = document.getElementById('copy-btn');
+                btn.innerHTML = "تم النسخ ✔️";
+                setTimeout(() => btn.innerHTML = "نسخ المحتوى 📋", 2000);
+            });
+        });
+
+        // تشغيل أولي
+        renderContent();
+    </script>
+</body>
+</html>
