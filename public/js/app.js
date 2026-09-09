@@ -24,7 +24,8 @@
     chapter_name: "الباب",
     narrators: "الرواة",
     page_number: "الصفحة",
-    takhreej: "التخريج"
+    takhreej: "التخريج",
+    hadith_action: "الإجراء"
   };
 
   const typeLabels = {
@@ -177,22 +178,42 @@
   // -------------------- RENDER TABLE & CARDS --------------------
   function setRows(rows, columns) {
     state.lastRows = rows || [];
-    state.lastColumns = columns || [];
+    state.lastColumns = getVisibleColumns(columns);
   }
 
   function renderTable(target, rows, columns) {
-    setRows(rows, columns);
+    rows = rows.map((row) => {
+      const displayRow = { ...row };
+      if (displayRow.hadith_type === "h_part" || displayRow.hadith_type === "h_main") {
+        displayRow.hadith_number = `${displayRow.hadith_number || ""} (حاشية)`;
+      }
+      return displayRow;
+    });
+    const displayColumns = getVisibleColumns(columns);
+    setRows(rows, displayColumns);
     if (!rows.length) {
       target.innerHTML = '<div class="panel text-center text-muted">لا توجد نتائج.</div>';
       return;
     }
-    const head = columns.map((column) => `<th>${labels[column] || column}</th>`).join("");
+    const hasContextColumns = ["volume_name", "book_name", "chapter_name"].some((column) => displayColumns.includes(column));
+    const head = `${displayColumns.map((column) => `<th class="${["volume_name", "book_name", "chapter_name"].includes(column) ? "context-column" : ""}">${labels[column] || column}</th>`).join("")}${hasContextColumns ? '<th class="mobile-only">المجلد / الكتاب / الباب</th>' : ""}<th>${labels.hadith_action}</th>`;
     const body = rows.map((row) => {
-      const cells = columns.map((column) => {
+      const cells = displayColumns.map((column) => {
         const value = formatCell(column, row[column], row);
-        return `<td data-label="${labels[column] || column}">${value}</td>`;
+        const contextClass = ["volume_name", "book_name", "chapter_name"].includes(column) ? "context-column" : "";
+        return `<td class="${contextClass}" data-label="${labels[column] || column}">${value}</td>`;
       }).join("");
-      return `<tr>${cells}</tr>`;
+      const contextValues = ["volume_name", "book_name", "chapter_name"]
+        .filter((column) => displayColumns.includes(column))
+        .map((column) => escapeHtml(row[column] || "-"));
+      const mobileContext = hasContextColumns
+        ? `<td class="mobile-only" data-label="المجلد / الكتاب / الباب">${contextValues.join(" / ")}</td>`
+        : "";
+      const hadithId = row.hadith_id || row.id || "";
+      const action = hadithId
+        ? `<button type="button" class="btn btn-sm btn-outline-primary" data-hadith-link="${escapeAttr(hadithId)}">استعرض كاملا</button>`
+        : '<span class="text-muted">-</span>';
+      return `<tr>${cells}${mobileContext}<td data-label="${labels.hadith_action}">${action}</td></tr>`;
     }).join("");
     target.innerHTML = `<div class="table-responsive"><table class="table results-table align-middle"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
     target.querySelectorAll("[data-hadith-link]").forEach((link) => {
@@ -208,6 +229,13 @@
     });
   }
 
+  function getVisibleColumns(columns) {
+    return (columns || []).filter((column) => {
+      if (column === "hadith_id" || column === "id") return false;
+      return column !== "hadith_type" || state.page === "search";
+    });
+  }
+
   function ensureHadithDetailModal() {
     if (document.getElementById("hadith-detail-modal")) return;
 
@@ -218,20 +246,23 @@
       <div class="hadith-detail-backdrop" data-close-hadith-modal="true"></div>
       <div class="hadith-detail-panel-wrap">
         <div class="hadith-detail-panel" role="dialog" aria-modal="true" aria-labelledby="hadith-modal-title">
-          <div class="hadith-detail-toolbar">
-            <div class="hadith-detail-toolbar-left">
-              <label class="hadith-detail-toggle">
-                <input type="checkbox" id="hadith-detail-toggle" class="hadith-detail-toggle-input">
-                <span>تخريج مطول (Full Takhreej)</span>
-              </label>
-              <button type="button" id="hadith-detail-copy-btn" class="hadith-detail-copy-btn">نسخ النص 📋</button>
-            </div>
+          <div class="hadith-detail-panel-header">
+            <div id="hadith-modal-title" class="hadith-detail-panel-title"></div>
             <button type="button" class="hadith-detail-close-btn" aria-label="إغلاق" data-close-hadith-modal="true">&times;</button>
           </div>
           <div id="hadith-detail-content" class="hadith-detail-content">
             <div id="hadith-detail-header" class="hadith-detail-header"></div>
             <div id="hadith-detail-matn" class="hadith-detail-matn"></div>
             <div id="hadith-detail-hashiah" class="hadith-detail-hashiah hidden"></div>
+          </div>
+          <div class="hadith-detail-toolbar">
+            <div class="hadith-detail-toolbar-left">
+              <label class="hadith-detail-toggle">
+                <input type="checkbox" id="hadith-detail-toggle" class="hadith-detail-toggle-input">
+                <span>تخريج مطول</span>
+              </label>
+              <button type="button" id="hadith-detail-copy-btn" class="hadith-detail-copy-btn">نسخ النص</button>
+            </div>
           </div>
         </div>
       </div>
@@ -283,6 +314,7 @@
     const modal = document.getElementById("hadith-detail-modal");
     if (!modal) return;
     const detailContent = modal.querySelector("#hadith-detail-content");
+    const panelTitle = modal.querySelector("#hadith-modal-title");
     const headerContainer = modal.querySelector("#hadith-detail-header");
     const matnContainer = modal.querySelector("#hadith-detail-matn");
     const hashiahContainer = modal.querySelector("#hadith-detail-hashiah");
@@ -301,6 +333,7 @@
     const headerInfo = normalizedRows[0];
 
     console.log(normalizedRows);
+    panelTitle.textContent = headerInfo.volume_name || "";
     headerContainer.innerHTML = `
       <div class="hadith-detail-volume">${escapeHtml(headerInfo.volume_name || "")}</div>
       <div class="hadith-detail-book">${escapeHtml(headerInfo.book_name || "")}</div>
@@ -355,11 +388,11 @@
 
     matnContainer.innerHTML = matnBlocks.map((block) => {
       const prefix = block.type === "main"
-        ? `<span class="hadith-detail-number">${escapeHtml(block.number)} -</span>`
+        ? `<span class="hadith-detail-number">${escapeHtml(toArabicDigits(block.number))} -</span>`
         : block.type === "sub"
           ? `<span class="hadith-detail-bullet">•</span>`
           : "";
-      const subScript = block.footnoteIndex ? `<sup class="hadith-detail-sup">(${block.footnoteIndex})</sup>` : "";
+      const subScript = block.footnoteIndex ? `<sup class="hadith-detail-sup">(${toArabicDigits(block.footnoteIndex)})</sup>` : "";
       return `
         <div class="hadith-detail-text-block">
           ${prefix}
@@ -369,10 +402,12 @@
       `;
     }).join("");
 
-    if (hashiahBlocks.length > 0 && (headerInfo.volume_id >= 7 || headerInfo.volume_id === 7 || headerInfo.volume_id === 1)) {
+    if (hashiahBlocks.length > 0 && (headerInfo.volume_id >= 7)) {
       hashiahContainer.classList.remove("hidden");
+      // make border-top visible when hashiah exists
+      hashiahContainer.style.borderTop = "1px solid #ccc";
       hashiahContainer.innerHTML = hashiahBlocks.map((hashiah) => {
-        const idx = `<span class="hadith-detail-footnote-index">(${hashiah.index})</span>`;
+        const idx = `<span class="hadith-detail-footnote-index">(${toArabicDigits(hashiah.index)})</span>`;
         const itemsHtml = hashiah.items.map((item) => {
           const htmlStr = item.html ? `<span class="hadith-detail-inline-p">${item.html}</span>` : "";
           const takhreejStr = item.takhreej ? `<span class="hadith-detail-takhreej">${escapeHtml(item.takhreej)}</span>` : "";
@@ -388,6 +423,8 @@
     } else {
       hashiahContainer.classList.add("hidden");
       hashiahContainer.innerHTML = "";
+      // remove border-top make it transparent when no hashiah
+      hashiahContainer.style.borderTop = "1px solid transparent";
     }
 
     if (toggle) {
@@ -415,6 +452,7 @@
     if (value === null || value === undefined || value === "") return '<span class="text-muted">-</span>';
     if (column === "hadith_id") return `<a href="#" data-hadith-link="${value}">${value}</a>`;
     if (column === "hadith_type") return `<span class="badge badge-type">${typeLabels[value] || value}</span>`;
+    if (column === "hadith_number") return toArabicDigits(escapeHtml(String(value)));
     if (column === "hadith_text") return escapeHtml(value).slice(0, 240) + (value.length > 240 ? "..." : "");
     if (column === "hadith_beginning") return `<a href="#" data-hadith-link="${row.hadith_id}">${escapeHtml(value)}</a>`;
     return escapeHtml(String(value));
@@ -440,7 +478,7 @@
       <article class="hadith-card type-${row.hadith_type || "main"}">
         <div class="hadith-meta">
           <span class="badge badge-type">${typeLabels[row.hadith_type] || row.hadith_type || ""}</span>
-          <span>رقم: ${escapeHtml(row.hadith_number || "-")}</span>
+          <span>رقم: ${escapeHtml(toArabicDigits(row.hadith_number || "-"))}</span>
           <span>${escapeHtml(row.volume_name || "")}</span>
           <span>${escapeHtml(row.book_name || "")}</span>
           <span>${escapeHtml(row.chapter_name || "")}</span>
@@ -467,7 +505,7 @@
           p_query: form.querySelector("[name=query]").value,
           ...filterParams(form),
           p_types: getSelectedValues(form.querySelector("[name=types]")),
-          p_limit: 100,
+          p_limit: 500,
           p_offset: 0
         });
         renderTable(results, rows, ["hadith_id", "hadith_number", "hadith_type", "hadith_text", "narrators", "volume_name", "book_name", "chapter_name"]);
@@ -485,23 +523,9 @@
       await runAction(async () => {
         const rows = await rpc("app_get_hadith_index", { ...filterParams(form), p_limit: 300, p_offset: 0 });
 
-        // --- NEW CODE: Edit data row by row ---
-        const processedRows = rows.map(row => {
-          // Create a copy of the row so we don't mutate the original data
-          let modifiedRow = { ...row }; 
-          
-          // Check your condition (replace h_part, h_main with your actual target type)
-          if (modifiedRow.hadith_type === 'h_part' || modifiedRow.hadith_type === 'h_main') { 
-            // Append or prepend whatever text you need to the hadith number
-            modifiedRow.hadith_number = modifiedRow.hadith_number + " (حاشية)"; 
-          }
-          
-          return modifiedRow;
-        });
-        // --------------------------------------
-        renderTable(results, processedRows, ["hadith_number", "hadith_beginning", "volume_name", "book_name", "chapter_name"]);
+        renderTable(results, rows, ["hadith_number", "hadith_beginning", "volume_name", "book_name", "chapter_name"]);
         //renderTable(results, rows, ["hadith_id", "hadith_number", "hadith_beginning", "hadith_type", "volume_name", "book_name", "chapter_name"]);
-        setStatus(`عدد النتائج المعروضة: ${processedRows.length}`);
+        setStatus(`عدد النتائج المعروضة: ${rows.length}`);
       });
     });
     form.requestSubmit();
@@ -516,12 +540,12 @@
     const results = document.querySelector("[data-results]");
 
     rawiInput.addEventListener("input", debounce(async () => {
-      const rows = await rpc("app_search_rawis", { p_query: rawiInput.value, p_limit: 20 });
+      const rows = await rpc("app_search_rawis", { p_query: rawiInput.value, p_limit: 500 });
       suggestions.innerHTML = rows.map((row) => `<option value="${escapeAttr(row.rawi_name)}" data-id="${row.rawi_id}">${escapeAttr(row.matched_alias || row.rawi_name)}"></option>`).join("");
     }, 250));
 
     form.querySelector("[data-add-rawi]").addEventListener("click", async () => {
-      const rows = await rpc("app_search_rawis", { p_query: rawiInput.value, p_limit: 1 });
+      const rows = await rpc("app_search_rawis", { p_query: rawiInput.value, p_limit: 500 });
       if (rows[0] && !state.selectedRawis.some((rawi) => rawi.rawi_id === rows[0].rawi_id)) {
         state.selectedRawis.push(rows[0]);
         renderRawiChips(chips);
@@ -535,7 +559,7 @@
         const rows = await rpc("app_get_rawi_hadiths", {
           p_rawi_ids: state.selectedRawis.map((rawi) => rawi.rawi_id),
           ...filterParams(form),
-          p_limit: 300,
+          p_limit: 500,
           p_offset: 0
         });
         renderTable(results, rows, ["rawi_name", "hadith_id", "hadith_number", "hadith_type", "hadith_text", "volume_name", "book_name", "chapter_name"]);
@@ -614,7 +638,7 @@
         p_volume_id: volumeId || null,
         p_book_id: bookId ? Number(bookId) : null,
         p_chapter_id: chapterId ? Number(chapterId) : null,
-        p_limit: 300,
+        p_limit: 500,
         p_offset: 0
       });
       renderHadithCards(content, rows, { showTakhreej });
@@ -683,9 +707,12 @@
 
   function mapExportRow(row) {
     const mapped = {};
-    (state.lastColumns.length ? state.lastColumns : Object.keys(row)).forEach((key) => {
-      mapped[labels[key] || key] = String(row[key] ?? "");
-    });
+    (state.lastColumns.length ? state.lastColumns : Object.keys(row))
+      .filter((key) => key !== "hadith_type" && getVisibleColumns([key]).includes(key))
+      .forEach((key) => {
+      const value = String(row[key] ?? "");
+      mapped[labels[key] || key] = key === "hadith_number" ? toArabicDigits(value) : value;
+      });
     return mapped;
   }
 
@@ -731,6 +758,10 @@
 
   function copyText(text) {
     navigator.clipboard.writeText(text).then(() => setStatus("تم النسخ."));
+  }
+
+  function toArabicDigits(value) {
+    return String(value).replace(/[0-9]/g, (digit) => "٠١٢٣٤٥٦٧٨٩"[Number(digit)]);
   }
 
   function debounce(fn, delay) {
