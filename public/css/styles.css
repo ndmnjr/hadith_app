@@ -320,7 +320,10 @@ img {
 
 .stat-card .stat-number {
   display: block;
-  font-size: clamp(1.6rem, 2vw, 2.4rem);
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: clamp(1rem, 2vw, 2.4rem);
   font-weight: 700;
   color: var(--brand-deep);
 }
@@ -328,6 +331,20 @@ img {
 .stat-card .stat-label {
   color: var(--muted);
   margin-top: .25rem;
+}
+
+@media (max-width: 575.98px) {
+  .stat-card {
+    padding: .85rem .65rem;
+  }
+
+  .stat-card .stat-number {
+    font-size: clamp(.9rem, 6vw, 1.55rem);
+  }
+
+  .stat-card .stat-label {
+    font-size: .85rem;
+  }
 }
 
 .hero-grid {
@@ -356,6 +373,58 @@ img {
   color: var(--brand-deep);
   font-size: 1.45rem;
   font-weight: 700;
+}
+
+.faq-page .page-title {
+  color: var(--brand-deep);
+}
+
+.faq-intro {
+  background: rgba(255, 255, 255, .82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.faq-section-title {
+  color: var(--brand-deep);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+}
+
+.faq-accordion .accordion-item {
+  overflow: hidden;
+  margin-bottom: .75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius) !important;
+  background: rgba(255, 255, 255, .88);
+}
+
+.faq-accordion .accordion-button {
+  color: var(--ink);
+  background: transparent;
+  font-weight: 700;
+  text-align: right;
+}
+
+.faq-accordion .accordion-button:not(.collapsed) {
+  color: var(--brand-deep);
+  background: var(--brand-soft);
+  box-shadow: none;
+}
+
+.faq-accordion .accordion-button:focus {
+  box-shadow: 0 0 0 .2rem rgba(23, 98, 75, .12);
+}
+
+.faq-answer {
+  color: var(--muted);
+  line-height: 2;
+}
+
+.faq-answer ul {
+  margin-bottom: 0;
 }
 
 .feature-index { position: absolute; top: 1rem; left: 1rem; color: #9ab0a5; font-size: .78rem; }
