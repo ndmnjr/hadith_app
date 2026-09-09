@@ -326,6 +326,51 @@ as $$
   offset greatest(0, coalesce(p_offset, 0));
 $$;
 
+create or replace function public.app_get_single_hadith_details(p_hadith_id bigint)
+returns table (
+  hadith_id bigint,
+  hadith_number text,
+  hadith_text text,
+  hadith_text_html text,
+  hadith_type text,
+  short_takhreej text,
+  long_takhreej text,
+  chapter_name text,
+  book_name text,
+  volume_id bigint,
+  volume_name text,
+  narrators text,
+  hadith_order_index integer
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select
+    h.id,
+    h.hadith_number,
+    h.text,
+    h.text_html,
+    h.type,
+    h.takhreej,
+    h.takhreej_full,
+    c.name,
+    b.name,
+    v.id,
+    v.name,
+    coalesce(string_agg(distinct r.name, '، ' order by r.name), '') as narrators,
+    h.order_index
+  from public.hadith h
+  join public.chapters c on c.id = h.chapter_id
+  join public.books b on b.id = c.book_id
+  join public.volumes v on v.id = b.volume_id
+  left join public.hadith_rawi hr on hr.hadith_id = h.id
+  left join public.rawis r on r.id = hr.rawi_id
+  where h.id = p_hadith_id
+  group by h.id, c.id, b.id, v.id;
+$$;
+
 create or replace function public.app_get_hadith_context(p_hadith_id bigint)
 returns table (
   hadith_id bigint,
@@ -422,5 +467,6 @@ grant execute on function public.app_get_hadith_index(bigint[], bigint[], bigint
 grant execute on function public.app_search_rawis(text, integer) to anon, authenticated;
 grant execute on function public.app_get_rawi_hadiths(bigint[], bigint[], bigint[], bigint[], integer, integer) to anon, authenticated;
 grant execute on function public.app_get_narrator_musnad(integer, bigint[], bigint[], bigint[], integer, integer) to anon, authenticated;
+grant execute on function public.app_get_single_hadith_details(bigint) to anon, authenticated;
 grant execute on function public.app_get_hadith_context(bigint) to anon, authenticated;
 grant execute on function public.app_browse_content(bigint, bigint, bigint, integer, integer) to anon, authenticated;

@@ -41,6 +41,7 @@
   // -------------------- INIT & ROUTING --------------------
   async function init() {
     markActiveNav();
+    ensureHadithDetailModal();
     bindExportButtons();
     bindReadingSize();
     await initSupabase();
@@ -82,9 +83,29 @@
   function initFilters(scope) {
     const root = scope || document;
     root.querySelectorAll("[data-filter-volume]").forEach((select) => fillSelect(select, state.filters.volumes, "كل المجلدات"));
+    root.querySelectorAll("[data-filter-search]").forEach((input) => {
+      input.addEventListener("input", () => filterSelectOptions(root, input.dataset.filterSearch, input.value));
+    });
+    root.querySelectorAll("[data-filter-search]").forEach((input) => filterSelectOptions(root, input.dataset.filterSearch, input.value));
     updateDependentFilters(root);
     root.querySelectorAll("[data-filter-volume]").forEach((select) => select.addEventListener("change", () => updateDependentFilters(root)));
     root.querySelectorAll("[data-filter-book]").forEach((select) => select.addEventListener("change", () => updateChapterFilter(root)));
+    root.querySelectorAll("[data-clear-filters]").forEach((button) => button.addEventListener("click", () => clearFilters(root)));
+  }
+
+  function clearFilters(root) {
+    const form = root.querySelector("[data-search-form], [data-index-form], [data-rawi-form], [data-musnad-form]");
+    if (form) form.reset();
+    root.querySelectorAll("[data-filter-search]").forEach((input) => { input.value = ""; });
+    root.querySelectorAll("select[multiple]").forEach((select) => {
+      [...select.options].forEach((option) => { option.selected = false; option.hidden = false; });
+    });
+    if (form && form.matches("[data-rawi-form]")) {
+      state.selectedRawis = [];
+      renderRawiChips(form.querySelector("[data-rawi-chips]"));
+    }
+    updateDependentFilters(root);
+    root.querySelectorAll("[data-filter-search]").forEach((input) => filterSelectOptions(root, input.dataset.filterSearch, ""));
   }
 
   function updateDependentFilters(root) {
@@ -114,6 +135,21 @@
     rows.forEach((row) => select.append(new Option(row.name, row.id)));
     [...select.options].forEach((option) => {
       option.selected = current.includes(Number(option.value));
+    });
+    const search = document.querySelector(`[data-filter-search="${filterKey(select)}"]`);
+    if (search) filterSelectOptions(document, filterKey(select), search.value);
+  }
+
+  function filterKey(select) {
+    return ["volume", "book", "chapter"].find((key) => select.hasAttribute(`data-filter-${key}`));
+  }
+
+  function filterSelectOptions(root, key, query) {
+    const select = root.querySelector(`[data-filter-${key}]`) || document.querySelector(`[data-filter-${key}]`);
+    if (!select) return;
+    const normalizedQuery = String(query || "").trim().toLocaleLowerCase();
+    [...select.options].forEach((option) => {
+      option.hidden = Boolean(normalizedQuery) && !option.textContent.toLocaleLowerCase().includes(normalizedQuery);
     });
   }
 
@@ -160,19 +196,227 @@
     }).join("");
     target.innerHTML = `<div class="table-responsive"><table class="table results-table align-middle"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
     target.querySelectorAll("[data-hadith-link]").forEach((link) => {
-      link.addEventListener("click", (event) => {
+      link.addEventListener("click", async (event) => {
         event.preventDefault();
-        location.href = `/hadith.html?id=${link.dataset.hadithLink}`;
+        const hadithId = link.dataset.hadithLink || link.dataset.hadithId;
+        if (hadithId) {
+          await openHadithDetailModal(Number(hadithId));
+        } else {
+          location.href = "/hadith.html?id=" + (link.getAttribute("href") || "").split("id=")[1];
+        }
       });
     });
   }
 
+  function ensureHadithDetailModal() {
+    if (document.getElementById("hadith-detail-modal")) return;
+
+    const modal = document.createElement("div");
+    modal.id = "hadith-detail-modal";
+    modal.className = "hadith-detail-modal hidden";
+    modal.innerHTML = `
+      <div class="hadith-detail-backdrop" data-close-hadith-modal="true"></div>
+      <div class="hadith-detail-panel-wrap">
+        <div class="hadith-detail-panel" role="dialog" aria-modal="true" aria-labelledby="hadith-modal-title">
+          <div class="hadith-detail-toolbar">
+            <div class="hadith-detail-toolbar-left">
+              <label class="hadith-detail-toggle">
+                <input type="checkbox" id="hadith-detail-toggle" class="hadith-detail-toggle-input">
+                <span>تخريج مطول (Full Takhreej)</span>
+              </label>
+              <button type="button" id="hadith-detail-copy-btn" class="hadith-detail-copy-btn">نسخ النص 📋</button>
+            </div>
+            <button type="button" class="hadith-detail-close-btn" aria-label="إغلاق" data-close-hadith-modal="true">&times;</button>
+          </div>
+          <div id="hadith-detail-content" class="hadith-detail-content">
+            <div id="hadith-detail-header" class="hadith-detail-header"></div>
+            <div id="hadith-detail-matn" class="hadith-detail-matn"></div>
+            <div id="hadith-detail-hashiah" class="hadith-detail-hashiah hidden"></div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeTriggers = modal.querySelectorAll("[data-close-hadith-modal]");
+    closeTriggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => modal.classList.add("hidden"));
+    });
+
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) modal.classList.add("hidden");
+    });
+  }
+
+  async function openHadithDetailModal(hadithId) {
+    const modal = document.getElementById("hadith-detail-modal");
+    if (!modal) return;
+
+    modal.classList.remove("hidden");
+
+    const content = modal.querySelector("#hadith-detail-content");
+    content.dataset.activeId = String(hadithId);
+
+    try {
+      const rows = await loadSingleHadithDetails(hadithId);
+      renderHadithClusterModal(rows);
+    } catch (error) {
+      content.innerHTML = '<div class="hadith-detail-empty">تعذّر تحميل الحديث.</div>';
+      console.error(error);
+    }
+  }
+
+  async function loadSingleHadithDetails(hadithId) {
+    try {
+      const data = await rpc("app_get_single_hadith_details", { p_hadith_id: parseInt(hadithId, 10) });
+      return Array.isArray(data) ? data : [data];
+    } catch (error) {
+      const message = String(error && error.message ? error.message : error || "");
+      const isMissingFunction = message.includes("does not exist") || message.includes("function") || message.includes("not found");
+      if (!isMissingFunction) throw error;
+      const fallback = await rpc("app_get_hadith_context", { p_hadith_id: parseInt(hadithId, 10) });
+      return Array.isArray(fallback) ? fallback : [fallback];
+    }
+  }
+
+  function renderHadithClusterModal(rows) {
+    const modal = document.getElementById("hadith-detail-modal");
+    if (!modal) return;
+    const detailContent = modal.querySelector("#hadith-detail-content");
+    const headerContainer = modal.querySelector("#hadith-detail-header");
+    const matnContainer = modal.querySelector("#hadith-detail-matn");
+    const hashiahContainer = modal.querySelector("#hadith-detail-hashiah");
+    const toggle = modal.querySelector("#hadith-detail-toggle");
+    const copyButton = modal.querySelector("#hadith-detail-copy-btn");
+
+    const normalizedRows = (Array.isArray(rows) ? rows : []).filter(Boolean);
+    if (!normalizedRows.length) {
+      headerContainer.innerHTML = "";
+      matnContainer.innerHTML = '<div class="hadith-detail-empty">لا يوجد نص للحديث.</div>';
+      hashiahContainer.classList.add("hidden");
+      return;
+    }
+
+    let showFullTakhreej = Boolean(toggle && toggle.checked);
+    const headerInfo = normalizedRows[0];
+
+    console.log(normalizedRows);
+    headerContainer.innerHTML = `
+      <div class="hadith-detail-volume">${escapeHtml(headerInfo.volume_name || "")}</div>
+      <div class="hadith-detail-book">${escapeHtml(headerInfo.book_name || "")}</div>
+      <div class="hadith-detail-chapter">${escapeHtml(headerInfo.chapter_name || "")}</div>
+    `;
+
+    const matnBlocks = [];
+    const hashiahBlocks = [];
+    let footnoteIndex = 1;
+    let activeMatnBlock = null;
+    let activeHashiahBlock = null;
+
+    normalizedRows.forEach((row) => {
+      const type = String(row.hadith_type || row.type || "").toLowerCase();
+      const htmlContent = row.hadith_text_html || row.text_html || row.hadith_text || row.text || "";
+
+      if (["main", "sub", "part"].includes(type) || row.volume_id in [1, 7]) {
+        const block = {
+          id: row.hadith_id || row.id,
+          type,
+          number: row.hadith_number || row.number || "",
+          html: htmlContent,
+          footnoteIndex: null
+        };
+        matnBlocks.push(block);
+        activeMatnBlock = block;
+        activeHashiahBlock = { index: null, items: [] };
+
+        if (showFullTakhreej && (row.long_takhreej || row.takhreej_full)) {
+          block.footnoteIndex = footnoteIndex;
+          activeHashiahBlock.index = footnoteIndex;
+          activeHashiahBlock.items.push({ html: null, takhreej: row.long_takhreej || row.takhreej_full });
+          hashiahBlocks.push(activeHashiahBlock);
+          footnoteIndex += 1;
+        }
+      } else if (["h_main", "h_part", "h_sub"].includes(type)) {
+        if (!activeMatnBlock) return;
+
+        if (!activeMatnBlock.footnoteIndex) {
+          activeMatnBlock.footnoteIndex = footnoteIndex;
+          activeHashiahBlock.index = footnoteIndex;
+          hashiahBlocks.push(activeHashiahBlock);
+          footnoteIndex += 1;
+        }
+
+        activeHashiahBlock.items.push({
+          html: htmlContent,
+          takhreej: showFullTakhreej ? (row.long_takhreej || row.takhreej_full) : (row.short_takhreej || row.takhreej)
+        });
+      }
+    });
+
+    matnContainer.innerHTML = matnBlocks.map((block) => {
+      const prefix = block.type === "main"
+        ? `<span class="hadith-detail-number">${escapeHtml(block.number)} -</span>`
+        : block.type === "sub"
+          ? `<span class="hadith-detail-bullet">•</span>`
+          : "";
+      const subScript = block.footnoteIndex ? `<sup class="hadith-detail-sup">(${block.footnoteIndex})</sup>` : "";
+      return `
+        <div class="hadith-detail-text-block">
+          ${prefix}
+          <span class="hadith-detail-inline-p">${block.html}</span>
+          ${subScript}
+        </div>
+      `;
+    }).join("");
+
+    if (hashiahBlocks.length > 0 && (headerInfo.volume_id >= 7 || headerInfo.volume_id === 7 || headerInfo.volume_id === 1)) {
+      hashiahContainer.classList.remove("hidden");
+      hashiahContainer.innerHTML = hashiahBlocks.map((hashiah) => {
+        const idx = `<span class="hadith-detail-footnote-index">(${hashiah.index})</span>`;
+        const itemsHtml = hashiah.items.map((item) => {
+          const htmlStr = item.html ? `<span class="hadith-detail-inline-p">${item.html}</span>` : "";
+          const takhreejStr = item.takhreej ? `<span class="hadith-detail-takhreej">${escapeHtml(item.takhreej)}</span>` : "";
+          return `<div class="hadith-detail-hashiah-item">${htmlStr}${takhreejStr}</div>`;
+        }).join("");
+        return `
+          <div class="hadith-detail-hashiah-row">
+            ${idx}
+            <div class="hadith-detail-hashiah-body">${itemsHtml}</div>
+          </div>
+        `;
+      }).join("");
+    } else {
+      hashiahContainer.classList.add("hidden");
+      hashiahContainer.innerHTML = "";
+    }
+
+    if (toggle) {
+      toggle.onchange = (event) => {
+        showFullTakhreej = Boolean(event.target.checked);
+        renderHadithClusterModal(normalizedRows);
+      };
+    }
+
+    if (copyButton) {
+      copyButton.onclick = async () => {
+        const textToCopy = detailContent.innerText;
+        await navigator.clipboard.writeText(textToCopy);
+        copyButton.textContent = "تم النسخ ✔️";
+        copyButton.classList.add("hadith-detail-copy-btn-success");
+        setTimeout(() => {
+          copyButton.textContent = "نسخ النص 📋";
+          copyButton.classList.remove("hadith-detail-copy-btn-success");
+        }, 2000);
+      };
+    }
+  }
+
   function formatCell(column, value, row) {
     if (value === null || value === undefined || value === "") return '<span class="text-muted">-</span>';
-    if (column === "hadith_id") return `<a href="/hadith.html?id=${value}" data-hadith-link="${value}">${value}</a>`;
+    if (column === "hadith_id") return `<a href="#" data-hadith-link="${value}">${value}</a>`;
     if (column === "hadith_type") return `<span class="badge badge-type">${typeLabels[value] || value}</span>`;
     if (column === "hadith_text") return escapeHtml(value).slice(0, 240) + (value.length > 240 ? "..." : "");
-    if (column === "hadith_beginning") return `<a href="/hadith.html?id=${row.hadith_id}" data-hadith-link="${row.hadith_id}">${escapeHtml(value)}</a>`;
+    if (column === "hadith_beginning") return `<a href="#" data-hadith-link="${row.hadith_id}">${escapeHtml(value)}</a>`;
     return escapeHtml(String(value));
   }
 
@@ -336,6 +580,7 @@
   // -------------------- bindBrowsePage --------------------
   function bindBrowsePage() {
     const volumeSelect = document.querySelector("[data-browse-volume]");
+    const volumeSearch = document.querySelector('[data-filter-search="browse-volume"]');
     const tree = document.querySelector("[data-tree]");
     const content = document.querySelector("[data-content]");
     fillSelect(volumeSelect, state.filters.volumes, "اختر المجلد");
