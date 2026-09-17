@@ -5,6 +5,7 @@
     client: null,
     filters: null,
     selectedRawis: [], // bindNarratorsPage
+    browseRows: [], // bindBrowsePage
     lastRows: [], // bindExportButtons
     lastColumns: [], // bindExportButtons
     page: document.body.dataset.page || "home"
@@ -485,7 +486,6 @@
           ${row.page_number ? `<span>ص ${row.page_number}</span>` : ""}
         </div>
         <div class="hadith-text">${text}</div>
-        ${row.narrators ? `<div class="mt-2 text-muted">الرواة: ${escapeHtml(row.narrators)}</div>` : ""}
         ${takhreejText ? `<div class="takhreej">${escapeHtml(takhreejText)}</div>` : ""}
         <div class="mt-3 no-print">
           <a class="btn btn-sm btn-outline-primary" href="/hadith.html?id=${row.hadith_id}">عرض الحديث</a>
@@ -606,28 +606,58 @@
     const volumeSelect = document.querySelector("[data-browse-volume]");
     const volumeSearch = document.querySelector('[data-filter-search="browse-volume"]');
     const tree = document.querySelector("[data-tree]");
+    const treeToggle = document.querySelector("[data-tree-toggle]");
+    const treeClose = document.querySelector("[data-tree-close]");
     const content = document.querySelector("[data-content]");
+    const takhreejToggle = document.querySelector("[name=show_takhreej]");
     fillSelect(volumeSelect, state.filters.volumes, "اختر المجلد");
+    const setTreeOpen = (isOpen) => {
+      tree.classList.toggle("is-open", isOpen);
+      treeToggle.setAttribute("aria-expanded", String(isOpen));
+      document.body.classList.toggle("tree-panel-open", isOpen);
+    };
+    treeToggle.addEventListener("click", () => {
+      const isOpen = tree.classList.toggle("is-open");
+      setTreeOpen(isOpen);
+    });
+    treeClose.addEventListener("click", () => setTreeOpen(false));
     volumeSelect.addEventListener("change", () => renderBrowseTree(tree, Number(volumeSelect.value), content));
+    takhreejToggle.addEventListener("change", () => {
+      if (!state.browseRows.length) return;
+      renderBrowseHadithCollection(content, state.browseRows, { showTakhreej: takhreejToggle.checked });
+    });
   }
 
   //// bindBrowsePage helper
   function renderBrowseTree(tree, volumeId, content) {
     const books = state.filters.books.filter((book) => Number(book.volume_id) === volumeId);
-    tree.innerHTML = books.map((book) => {
+    tree.innerHTML = books.map((book, index) => {
       const chapters = state.filters.chapters.filter((chapter) => Number(chapter.book_id) === Number(book.id));
       return `
-        <button class="tree-item tree-book" data-book="${book.id}">${escapeHtml(book.name)}</button>
+        <button class="tree-item tree-book${index === 0 ? " active" : ""}" data-book="${book.id}">${escapeHtml(book.name)}</button>
         ${chapters.map((chapter) => `<button class="tree-item tree-chapter" data-chapter="${chapter.id}" data-book="${book.id}">${escapeHtml(chapter.name)}</button>`).join("")}
       `;
     }).join("");
+    const selectTreeItem = async (button) => {
+      tree.querySelectorAll(".active").forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+      await loadBrowseContent(content, volumeId, button.dataset.book, button.dataset.chapter);
+      button.classList.add("active");
+      const treeToggle = document.querySelector("[data-tree-toggle]");
+      if (tree.classList.contains("is-open") && treeToggle) {
+        tree.classList.remove("is-open");
+        treeToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("tree-panel-open");
+      }
+    };
     tree.querySelectorAll("[data-book],[data-chapter]").forEach((button) => {
-      button.addEventListener("click", async () => {
-        tree.querySelectorAll(".active").forEach((item) => item.classList.remove("active"));
-        button.classList.add("active");
-        await loadBrowseContent(content, volumeId, button.dataset.book, button.dataset.chapter);
-      });
+      button.addEventListener("click", () => selectTreeItem(button));
     });
+    const firstBook = tree.querySelector(".tree-item.tree-book");
+    if (firstBook) {
+      firstBook.classList.add("active");
+      selectTreeItem(firstBook);
+    }
   }
 
   //// bindBrowsePage helper
@@ -641,9 +671,59 @@
         p_limit: 500,
         p_offset: 0
       });
-      renderHadithCards(content, rows, { showTakhreej });
+      state.browseRows = rows;
+      renderBrowseHadithCollection(content, rows, { showTakhreej });
       setStatus(`عدد النصوص المعروضة: ${rows.length}`);
     });
+  }
+
+  function renderBrowseHadithCollection(target, rows, options) {
+    setRows(rows, ["hadith_id", "hadith_number", "hadith_type", "volume_name", "book_name", "chapter_name", "hadith_text", "narrators", "takhreej"]);
+    if (!rows.length) {
+      target.innerHTML = '<div class="panel text-center text-muted">لا توجد أحاديث للعرض.</div>';
+      return;
+    }
+
+    const showTakhreej = options && options.showTakhreej;
+    const blocks = [];
+    let currentBookId;
+    let currentChapterId;
+    let activeBlock;
+
+    rows.forEach((row) => {
+      const bookId = row.book_id ?? row.book_name;
+      const chapterId = row.chapter_id ?? row.chapter_name;
+      if (bookId !== currentBookId) {
+        blocks.push(`<h2 class="browse-reading-book">${escapeHtml(row.book_name || "")}</h2>`);
+        currentBookId = bookId;
+        currentChapterId = undefined;
+      }
+      if (chapterId !== currentChapterId) {
+        blocks.push(`<h3 class="browse-reading-chapter">${escapeHtml(row.chapter_name || "")}</h3>`);
+        currentChapterId = chapterId;
+      }
+
+      const type = String(row.hadith_type || row.type || "").toLowerCase();
+      const htmlContent = row.hadith_text_html || row.text_html || row.hadith_text || row.text || "";
+      if (["main", "sub", "part"].includes(type)) {
+        activeBlock = { type, number: row.hadith_number || row.number || "" };
+        const prefix = type === "main"
+          ? `<span class="hadith-detail-number">${escapeHtml(toArabicDigits(activeBlock.number))} -</span>`
+          : type === "sub"
+            ? `<span class="hadith-detail-bullet">•</span>`
+            : "";
+        const takhreej = showTakhreej ? (row.long_takhreej || row.takhreej_full) : (row.short_takhreej || row.takhreej);
+        const takhreejHtml = takhreej
+          ? `<span class="browse-reading-takhreej${showTakhreej ? " browse-reading-takhreej-full" : ""}">${escapeHtml(takhreej)}</span>`
+          : "";
+        blocks.push(`<div class="hadith-detail-text-block browse-reading-text-block">${prefix}<span class="hadith-detail-inline-p">${htmlContent}</span>${takhreejHtml}</div>`);
+      } else if (["h_main", "h_part", "h_sub"].includes(type) && activeBlock) {
+        const takhreej = showTakhreej ? (row.long_takhreej || row.takhreej_full) : (row.short_takhreej || row.takhreej);
+        blocks.push(`<div class="browse-reading-footnote"><span class="hadith-detail-inline-p">${htmlContent}</span>${takhreej ? `<span class="browse-reading-takhreej">${escapeHtml(takhreej)}</span>` : ""}</div>`);
+      }
+    });
+
+    target.innerHTML = `<article class="browse-reading-panel">${blocks.join("")}</article>`;
   }
 
   // -------------------- bindHadithPage --------------------

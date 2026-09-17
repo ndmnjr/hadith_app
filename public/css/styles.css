@@ -556,6 +556,71 @@ img {
   box-shadow: var(--shadow);
 }
 
+.browse-reading-panel {
+  background: #fdfcf2;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  color: #111827;
+  font-family: kitab, 'Amiri', 'Noto Naskh Arabic', serif;
+  font-size: var(--reading-size);
+  line-height: 2;
+  padding: 1.5rem 2.5rem 2rem;
+}
+
+.browse-reading-book,
+.browse-reading-chapter {
+  text-align: center;
+}
+
+.browse-reading-book {
+  color: #b91c1c;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 2rem 0 .25rem;
+}
+
+.browse-reading-chapter {
+  color: #15803d;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+}
+
+.browse-reading-text-block {
+  margin-bottom: 1rem;
+  line-height: 1.35;
+}
+
+.browse-reading-panel .hadith-detail-text-block {
+  margin-bottom: 1rem;
+}
+
+.browse-reading-footnote {
+  display: block;
+  margin: 0 0 1rem;
+  padding: 0 .75rem .4rem;
+  border-right: 3px solid #b78232;
+  background: #f5ead1;
+  font-size: .9em;
+}
+
+.browse-reading-takhreej {
+  display: inline;
+  color: #545c67;
+  font-size: .7em;
+  line-height: 1;
+  margin: 0;
+}
+
+/* .browse-reading-takhreej-full {
+  line-height: 1.2;
+} */
+
+.browse-reading-footnote .hadith-detail-takhreej {
+  margin-right: .5rem;
+}
+
 .hadith-detail-modal {
   position: fixed;
   inset: 0;
@@ -848,9 +913,19 @@ img {
 }
 
 .tree-list {
-  max-height: calc(100vh - 220px);
-  overflow: auto;
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
   background: rgba(255, 255, 255, 0.7);
+}
+
+.tree-toggle {
+  display: none;
+}
+
+.tree-close {
+  display: none;
 }
 
 .tree-item {
@@ -945,6 +1020,68 @@ img {
 
   .toolbar > * {
     min-width: 100%;
+  }
+
+  .tree-toggle {
+    position: fixed;
+    inset-inline-start: 1rem;
+    bottom: 1rem;
+    z-index: 31;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    margin: 0;
+    padding: .55rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--brand-deep);
+    cursor: pointer;
+  }
+
+  .tree-toggle svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 2;
+  }
+
+  .tree-list {
+    display: none;
+    position: static;
+    max-height: 50vh;
+  }
+
+  .tree-list.is-open {
+    display: block;
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: min(50vw, 360px);
+    z-index: 30;
+    max-height: none;
+    overflow-y: auto;
+    margin: 0;
+    border-radius: 12px 0 0 12px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, .98);
+    box-shadow: 12px 0 30px rgba(22, 57, 44, .16);
+  }
+
+  .tree-close {
+    display: block;
+    margin-bottom: 1rem;
+    margin-inline-start: auto;
+    padding: .35rem .7rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--brand-deep);
+    font: inherit;
   }
 
   .results-table thead {
