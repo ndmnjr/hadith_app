@@ -592,10 +592,6 @@ img {
   line-height: 1.35;
 }
 
-.browse-reading-panel .hadith-detail-text-block {
-  margin-bottom: 1rem;
-}
-
 .browse-reading-footnote {
   display: block;
   margin: 0 0 1rem;
@@ -611,14 +607,6 @@ img {
   font-size: .7em;
   line-height: 1;
   margin: 0;
-}
-
-/* .browse-reading-takhreej-full {
-  line-height: 1.2;
-} */
-
-.browse-reading-footnote .hadith-detail-takhreej {
-  margin-right: .5rem;
 }
 
 .hadith-detail-modal {

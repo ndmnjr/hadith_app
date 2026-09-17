@@ -604,7 +604,6 @@
   // -------------------- bindBrowsePage --------------------
   function bindBrowsePage() {
     const volumeSelect = document.querySelector("[data-browse-volume]");
-    const volumeSearch = document.querySelector('[data-filter-search="browse-volume"]');
     const tree = document.querySelector("[data-tree]");
     const treeToggle = document.querySelector("[data-tree-toggle]");
     const treeClose = document.querySelector("[data-tree-close]");
@@ -714,7 +713,7 @@
             : "";
         const takhreej = showTakhreej ? (row.long_takhreej || row.takhreej_full) : (row.short_takhreej || row.takhreej);
         const takhreejHtml = takhreej
-          ? `<span class="browse-reading-takhreej${showTakhreej ? " browse-reading-takhreej-full" : ""}">${escapeHtml(takhreej)}</span>`
+          ? `<span class="browse-reading-takhreej">${escapeHtml(takhreej)}</span>`
           : "";
         blocks.push(`<div class="hadith-detail-text-block browse-reading-text-block">${prefix}<span class="hadith-detail-inline-p">${htmlContent}</span>${takhreejHtml}</div>`);
       } else if (["h_main", "h_part", "h_sub"].includes(type) && activeBlock) {
